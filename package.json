@@ -11,8 +11,9 @@
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.2",
     "@ant-design/static-style-extract": "^1.0.1",
+    "@aws-sdk/client-ses": "^3.395.0",
     "@heroicons/react": "^2.0.18",
-    "@next-auth/prisma-adapter": "^1.0.7",
+    "@next-auth/prisma-adapter": "^0.4.4-canary.81",
     "@prisma/client": "^5.2.0",
     "@types/node": "20.5.3",
     "@types/react": "18.2.21",

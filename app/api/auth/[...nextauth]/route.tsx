@@ -4,7 +4,8 @@ import GoogleProvider from "next-auth/providers/google"
 import FacebookProvider from "next-auth/providers/facebook";
 // import type { Adapter } from "next-auth/adapters";
 
-import { PrismaAdapter } from "@auth/prisma-adapter";
+// import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient, Role } from "@prisma/client";
 
 const prisma = new PrismaClient();

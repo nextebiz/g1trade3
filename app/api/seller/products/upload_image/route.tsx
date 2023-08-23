@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto"
 import { v2 as cloudinary } from "cloudinary";
-import axios from "axios";
 import prisma from "@/libs/prisma";
 
 let timestamp = new Date().getTime();
@@ -29,11 +28,6 @@ export async function POST(req: Request, res: Response) {
 
     let url = `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload`;
 
-    // const result = await axios.post(url, formData)
-    //     .then(response => {
-    //     })
-    //     .catch(err => {
-    //     })
 
     try {
         const fetch_cloudinary = await fetch(url, { method: "POST", body: formData })
