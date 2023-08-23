@@ -319,7 +319,7 @@ export default function ProductDisplay() {
                             <div className='flex flex-col justify-start mt-2'>
 
                               <div style={{ width: "150px" }} >
-                                <Form.Item<FieldType>
+                                <Form.Item
                                   name="amount_offer"
                                   rules={[{ required: true, message: 'Amount is required' }]}
                                 >
@@ -512,7 +512,7 @@ export default function ProductDisplay() {
 
                               <div style={{ width: "150px" }} className='mr-2'>
                                 <div>Quantity</div>
-                                <Form.Item<FieldType>
+                                <Form.Item
                                   name="amount_order"
 
                                   rules={[{ required: true, message: 'Order Quantity is Required' }]}
@@ -560,7 +560,7 @@ export default function ProductDisplay() {
                             <div>
                               <div>Write note for the seller</div>
 
-                              <Form.Item<FieldType>
+                              <Form.Item
                                 name="buyernote"
                                 rules={[{ required: true, message: 'Write a note for the seller' }]}
                               >
