@@ -1,0 +1,280 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                    String          @id @default(cuid())
+  name                  String?
+  email                 String?         @unique
+  password              String?
+  emailVerified         DateTime?
+  image                 String?
+  accounts              Account[]
+  sessions              Session[]
+  role                  Role            @default(BUYER)
+  phone1                String?         @db.VarChar(20)
+  phone2                String?         @db.VarChar(20)
+  phone3                String?         @db.VarChar(20)
+  address               String?         @db.VarChar(255)
+  picture               String?         @db.VarChar(255)
+  products              Product[]
+  cartId                String?
+  cityLimits            CityLimits      @default(LIMITED)
+  numberOfAllowedCities Int             @default(1)
+  expirtyDate           DateTime?
+  status                AccountStatus   @default(ACTIVE)
+  enabled               Boolean         @default(true)
+  Order                 Order[]
+  ProductLikes          ProductLikes[]
+  Likes                 Int             @default(0)
+  AdminMessages         AdminMessages[]
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime?
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Province {
+  id      String        @id @default(cuid())
+  name    String        @unique @db.VarChar(255)
+  city    City[]
+  product ProductCity[]
+  enabled Boolean       @default(true)
+}
+
+model City {
+  id       String        @id @default(cuid())
+  name     String        @db.VarChar(255)
+  enabled  Boolean       @default(true)
+  Province Province?     @relation(fields: [provinceId], references: [id])
+  product  ProductCity[]
+
+  provinceId String?
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique @db.VarChar(255)
+  products Product[]
+  enabled  Boolean   @default(true)
+}
+
+model Product {
+  id             String          @id @default(cuid())
+  title          String          @db.VarChar(255)
+  description    String?         @db.LongText()
+  User           User            @relation(fields: [userId], references: [id])
+  userId         String
+  Category       Category?       @relation(fields: [categoryId], references: [id])
+  categoryId     String?
+  productCity    ProductCity[]
+  images         ImageProduct[]
+  image_cover_id String?
+  weight         Float           @default(1)
+  weightUnit     WeightUnit      @default(KILOGRAM)
+  price          Int             @default(0)
+  priceUnit      WeightUnit      @default(KILOGRAM)
+  receiveOffers  Boolean         @default(false)
+  enabled        Boolean         @default(true)
+  rating         ProductRating[]
+  likes          Int             @default(0)
+  views          Int             @default(0)
+  status         ProductStatus   @default(APPROVED)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?
+  Order          Order[]
+  ProductLikes   ProductLikes[]
+}
+
+model ProductCity {
+  City       City      @relation(fields: [cityId], references: [id])
+  cityId     String
+  Product    Product   @relation(fields: [productId], references: [id])
+  productId  String
+  Province   Province? @relation(fields: [provinceId], references: [id])
+  provinceId String
+
+  @@id([productId, cityId, provinceId])
+}
+
+model ImageProduct {
+  id        String   @id @default(cuid())
+  url       String?
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+  asset_id  String?
+  public_id String?
+}
+
+model ImageProfile {
+  id              String         @id @default(cuid())
+  pictureid       String?
+  url             String?
+  SellerProfile   SellerProfile? @relation(fields: [sellerProfileId], references: [id])
+  sellerProfileId String?
+}
+
+model Cart {
+  id    String     @id @default(cuid())
+  name  String     @db.VarChar(255)
+  items CartItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
+
+model CartItem {
+  id     String  @id @default(cuid())
+  Cart   Cart?   @relation(fields: [cartId], references: [id])
+  cartId String?
+}
+
+model Order {
+  id             String       @id @default(cuid())
+  note           String?      @default("")
+  product        Product      @relation(fields: [productId], references: [id])
+  productId      String
+  weight         Int          @default(0)
+  weightUnit     WeightUnit   @default(KILOGRAM)
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  orderAction    OrderActions @default(PENDING)
+  sellerComments String       @default("") @db.LongText()
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime?
+}
+
+model AdminMessages {
+  id         String             @id @default(cuid())
+  department String             @default("SALES")
+  message    String             @default("")
+  user       User               @relation(fields: [userId], references: [id])
+  userId     String
+  action     AdminMessageAction @default(PENDING)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime?
+}
+
+enum AdminMessageAction {
+  PENDING
+  REPLIED
+}
+
+enum OrderActions {
+  PENDING
+  ACCEPTED
+  DELIVERED
+  CANCELLED
+}
+
+model Message {
+  id        String    @id @default(cuid())
+  message   String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
+
+model ProductRating {
+  id        String    @id @default(cuid())
+  message   String    @db.VarChar(255)
+  stars     Int       @default(5)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  Product   Product?  @relation(fields: [productId], references: [id])
+  productId String?
+}
+
+model SellerProfile {
+  id           String         @id @default(cuid())
+  title        String?        @default("")
+  description1 String         @default("") @db.Text
+  description2 String?        @default("") @db.Text
+  images       ImageProfile[]
+  userId       String         @unique
+  enabled      Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime?
+}
+
+model ProductLikes {
+  id        String  @id @default(cuid())
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+enum AccountStatus {
+  ACTIVE
+  PAYMENTDUE
+}
+
+enum ProductStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Role {
+  ADMIN
+  SELLER
+  BUYER
+}
+
+enum WeightUnit {
+  KILOGRAM
+  MAUND
+  TONNE
+}
+
+enum PriceUnit {
+  KILOGRAM
+  MAUND
+  TONNE
+}
+
+enum CityLimits {
+  UNLIMITED
+  LIMITED
+}
