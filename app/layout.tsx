@@ -8,6 +8,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from "next/navigation"
 const inter = Inter({ subsets: ['latin'] })
 import { headers } from "next/headers"
+import { authOptions } from './api/auth/[...nextauth]/route'
 
 export const metadata: Metadata = {
   title: 'G1 Garlic Mandi | G1 Garlic Trading Online | Sell G1 Garlic',
@@ -21,10 +22,13 @@ export const metadata: Metadata = {
 // }
 
 export default async function RootLayout({
+
+  
   children
 }: {
   children: React.ReactNode
 }) {
+  const session = await getServerSession(authOptions)
  
   return (
     <html lang="en">
