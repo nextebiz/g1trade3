@@ -1,0 +1,73 @@
+$btn_default_color: #0091ff;
+$btn_hover_color: #019c49;
+
+$google_btn_color: #f4424e;
+$facebook_btn_color: #3b5998;
+$panel_bg_color: #101827;
+
+.ant-btn {
+    background: $btn_default_color !important;
+}
+
+.ant-btn:hover {
+    background: $btn_hover_color !important;
+}
+
+.google_btn {
+    background: $google_btn_color !important;
+}
+
+.facebook_btn {
+    background: $facebook_btn_color !important;
+}
+
+.bg-panel-color {
+    background-color: $panel_bg_color
+}
+
+
+
+.ant-btn-primary {
+    color: #ffffff !important;
+}
+
+.ant-btn-default {
+    color: #ffffff !important;
+}
+
+
+.ql-clipboard {
+    position: fixed !important;
+}
+
+.ql-container {
+    height: 350px !important;
+}
+
+.ql-editor {
+    height: 350px !important;
+}
+
+.body-content {
+    min-height: 400px !important;
+}
+
+/* body{
+    background-color: red;
+} */
+
+svg.star-svg {
+    display: inline;
+}
+
+.filled-icons {
+    display: none;
+}
+
+#order_select {
+    margin: 0px
+}
+
+.order-status .ant-form-item {
+    margin-bottom: 0px !important
+}
