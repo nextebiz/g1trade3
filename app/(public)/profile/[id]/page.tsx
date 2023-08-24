@@ -73,6 +73,8 @@ export default function Profile() {
             const fetch_user = await fetch("/api/myadmin/users/find_user", {
                 method: "POST",
                 body: form_data,
+                next: { revalidate: 60 }
+
             });
             const user_response = await fetch_user.json();
             if (user_response) {
@@ -86,7 +88,11 @@ export default function Profile() {
             const form_data = new FormData();
             form_data.set("user_id", user_id)
 
-            const fetch_profile = await fetch("/api/seller/profile", { method: "POST", body: form_data })
+            const fetch_profile = await fetch("/api/seller/profile", {
+                method: "POST",
+                body: form_data,
+                next: { revalidate: 60 }
+            })
             const response_profile = await fetch_profile.json();
 
             if (response_profile.status === 200) {
@@ -114,7 +120,11 @@ export default function Profile() {
             form_data.set("take", take.toString())
             form_data.set("skip", skip.toString())
 
-            const fetch_products = await fetch("/api/seller/products/find_products", { method: "POST", body: form_data })
+            const fetch_products = await fetch("/api/seller/products/find_products", { 
+                method: "POST", 
+                body: form_data,
+                next: { revalidate: 60 } 
+            })
             const response_products = await fetch_products.json();
             setProducts(response_products.data.products)
         }

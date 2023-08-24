@@ -41,7 +41,9 @@ export default function SignIn() {
                 form_data.set("id", my_session?.user.id);
                 const fetch_user = await fetch("/api/myadmin/users/find_user", {
                     method: "POST",
-                    body: form_data
+                    body: form_data,
+                    next: { revalidate: 60 }
+
                 })
                 const user_response = await fetch_user.json();
                 if (user_response) {

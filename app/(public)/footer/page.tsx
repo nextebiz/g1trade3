@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import React from 'react'
+import { MessageOutlined, PhoneOutlined } from "@ant-design/icons"
 
 export default function PublicFooter() {
 
@@ -15,76 +16,82 @@ export default function PublicFooter() {
                             {/* eslint-disable */}
                             <img className='' src='/images/logo/g1trade-logo-g1-garlic-sale-pakistan.svg?v-1' style={{ width: "150px" }} alt="" />
                         </Link>
-                        <p className="mt-2 text-sm text-gray-500">Air plant banjo lyft occupy retro adaptogen indego</p>
+                        <p className="mt-2 text-sm text-gray-100">G1 Garlic Trading Platform. Buy & Sell Fresh and Dry G1 Garlic from All Major Cities of Pakistan.</p>
+
+                        <div className='mt-3'>
+                            <a href='tel:03361633321' className="hover:text-green-500">
+                                <span className='text-xl'>
+                                    <PhoneOutlined />
+                                </span>
+                                <span className='ml-2'>
+                                    0336-1633321
+                                </span>
+                            </a>
+                        </div>
+                        <div className='mt-3'>
+                            <Link href='/contact' className="hover:text-green-500">
+                                <span className='text-xl'>
+                                    <MessageOutlined />
+                                </span>
+                                <span className='ml-2'>
+                                    Contact Us
+                                </span>
+                            </Link>
+                        </div>
                     </div>
                     <div className="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
                         <div className="lg:w-1/4 md:w-1/2 w-full px-4">
                             <h2 className="title-font font-medium text-green-500 tracking-widest text-sm mb-3">TOP CITIES</h2>
                             <nav className="list-none mb-10">
-                                <li>
-                                    <a className="hover:text-gray-800">First Link</a>
+                                <li className='mb-2'>
+                                    <Link href={"/?page=1&pid=cllowzuxr0009rlhkzpy0ns4d&cid=cllowzwux0032rlhki6gttzlf"} className="hover:text-green-500">Islamabad</Link>
                                 </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Second Link</a>
+                                <li className='mb-2'>
+                                    <Link href={"/?page=1&pid=cllowzubo0005rlhkihgfftuo&cid=cllowzv42000erlhkco8hh2a2"} className="hover:text-green-500">Rawalpindi</Link>
                                 </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Third Link</a>
+                                <li className='mb-2'>
+                                    <Link href={"/?page=1&pid=cllowzubo0005rlhkihgfftuo&cid=cllowzv42000crlhkq68qq7oy"} className="hover:text-green-500">Lahore</Link>
                                 </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Fourth Link</a>
+                                <li className='mb-2'>
+                                    <Link href={"/?page=1&pid=cllowzuxn0006rlhk4jzn7y9i&cid=cllowzwuy005erlhk8jrb6zke"} className="hover:text-green-500">Swabi</Link>
                                 </li>
+                                <li className='mb-2'>
+                                    <Link href={"/?page=1&pid=cllowzuxn0006rlhk4jzn7y9i&cid=cllowzwuy005crlhkdxoilzgw"} className="hover:text-green-500">Abbottabad</Link>
+                                </li>
+
                             </nav>
                         </div>
                         <div className="lg:w-1/4 md:w-1/2 w-full px-4">
                             <h2 className="title-font font-medium text-green-500 tracking-widest text-sm mb-3">BEST SELLERS</h2>
                             <nav className="list-none mb-10">
-                                <li>
-                                    <a className="hover:text-gray-800">First Link</a>
+                                <li className='mb-2'>
+                                    <Link href={'/profile/cllnf4gbg0000rlxgyras3ql9'} className="hover:text-green-500">Imran malik</Link>
                                 </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Second Link</a>
-                                </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Third Link</a>
-                                </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Fourth Link</a>
+
+                            </nav>
+                        </div>
+
+                        <div className="lg:w-1/4 md:w-1/2 w-full px-4">
+                            <h2 className="title-font font-medium text-green-500 tracking-widest text-sm mb-3">HOW TO BUY</h2>
+                            <nav className="list-none mb-10">
+                                <li className='mb-2'>
+                                    <a className="hover:text-green-500">How to place order</a>
                                 </li>
                             </nav>
+
                         </div>
                         <div className="lg:w-1/4 md:w-1/2 w-full px-4">
                             <h2 className="title-font font-medium text-green-500 tracking-widest text-sm mb-3">HOW TO SELL</h2>
                             <nav className="list-none mb-10">
-                                <li>
-                                    <a className="hover:text-gray-800">First Link</a>
+                                <li className='mb-2'>
+                                    <a className="hover:text-green-500">How to sign up as a seller</a>
                                 </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Second Link</a>
+                                <li className='mb-2'>
+                                    <a className="hover:text-green-500">How to list your products for sale</a>
                                 </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Third Link</a>
-                                </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Fourth Link</a>
-                                </li>
+
                             </nav>
-                        </div>
-                        <div className="lg:w-1/4 md:w-1/2 w-full px-4">
-                            <h2 className="title-font font-medium text-green-500 tracking-widest text-sm mb-3">CONTACT SUPPORT</h2>
-                            <nav className="list-none mb-10">
-                                <li>
-                                    <a className="hover:text-gray-800">First Link</a>
-                                </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Second Link</a>
-                                </li>
-                                <li>
-                                    <a className="hover:text-gray-800">Third Link</a>
-                                </li>
-                                <li>
-                                    <a href='/contact' className="hover:text-gray-800">Contact Us</a>
-                                </li>
-                            </nav>
+
                         </div>
                     </div>
                 </div>

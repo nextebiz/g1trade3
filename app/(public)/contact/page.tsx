@@ -36,7 +36,11 @@ export default function Contact() {
         form_data.set("department", department)
         form_data.set("message", message_text)
 
-        const fetch_send_message = await fetch("/api/public/contact", { method: "POST", body: form_data })
+        const fetch_send_message = await fetch("/api/public/contact", { 
+            method: "POST", 
+            body: form_data,
+            next: { revalidate: 60 } 
+        })
         const response_message = await fetch_send_message.json();
         console.log(response_message)
         setIsSaving(false)

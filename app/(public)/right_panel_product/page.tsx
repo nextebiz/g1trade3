@@ -74,11 +74,11 @@ export default function RightPanelProduct({ params: { product } }: Props) {
             >
                 <Link href={`/product/${product.id}`}>
                     {get_cover_image() !== undefined ?
-                        <img src={get_cover_image().url} alt={product.Category.name} /> :
-                        product.Category.name === "G1 Garlic Dry" ?
-                            <img src="/images/g1garlic-dry-no-image.jpg" alt={product.Category.name} />
+                        <img src={get_cover_image().url} alt={product.Category?.name} /> :
+                        product.Category?.name === "G1 Garlic Dry" ?
+                            <img src="/images/g1garlic-dry-no-image.jpg" alt={product.Category?.name} />
                             :
-                            <img src="/images/g1garlic-wet-no-image.jpg" alt={product.Category.name} />
+                            <img src="/images/g1garlic-wet-no-image.jpg" alt={product.Category?.name} />
                     }
                 </Link>
                 <div className='absolute top-0 right-0 m-4 p-1 bg-opacity-50 rounded-full text-xs px-2 bg-white'>{product._count.images}</div>
@@ -118,7 +118,7 @@ export default function RightPanelProduct({ params: { product } }: Props) {
 
                 <div className='flex flex-wrap text-sm mb-2 '>
                     <div >
-                        {product.Category.name}
+                        {product.Category?.name}
                     </div>
                     <div className=''>
                         &nbsp;is available for sale in&nbsp;

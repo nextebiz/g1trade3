@@ -15,7 +15,9 @@ export default function SeedData() {
 
   const categories = [
     { name: "G1 Garlic Dry" },
-    { name: "G1 Garlic Fresh (Wet)" }
+    { name: "G1 Garlic Fresh (Wet)" },
+    { name: "G1 Garlic Baby Seed" }
+
   ]
 
   const punjab_cities = [

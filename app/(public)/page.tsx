@@ -22,6 +22,7 @@ export default function Home() {
   const router = useRouter();
 
   const [page_loaded, setPageLoaded] = useState(false)
+  const [products_loaded, setProductsLoaded] = useState(false)
   const [reload_data, setReloadData] = useState(false)
   const [products, setProducts] = useState<Product[]>([] as Product[])
   const [total_products, setTotalProducts] = useState(0)
@@ -33,7 +34,7 @@ export default function Home() {
   const [selected_city, setSelectedCity] = useState<City>({} as City)
   const [cities, setCities] = useState<City[]>([] as City[])
 
- 
+
   // const [page, setPage] = useState(0)
   const [showLeftPanel, setShowLeftPanel] = useState(true)
   const [open, setOpen] = useState(false);
@@ -74,6 +75,7 @@ export default function Home() {
   }
   const get_products = async () => {
 
+    setProductsLoaded(false)
     const form_data = new FormData();
     let go_to_page = current_page;
 
@@ -102,13 +104,15 @@ export default function Home() {
 
     const fetch_products = await fetch("/api/public/products", {
       method: "post",
-      body: form_data
+      body: form_data,
+      next: { revalidate: 60 }
     })
     const response_products = await fetch_products.json()
     setProducts(response_products.data)
     setTotalProducts(response_products.stats.count)
     setTake(response_products.stats.take)
     setPageLoaded(true)
+    setProductsLoaded(true)
   }
 
   useEffect(() => {
@@ -146,89 +150,123 @@ export default function Home() {
               city_id,
               setCities,
               cities,
-              page_loaded
+              page_loaded, 
+              onClose
             }} />
           </div>
         </div>
-        <div className='pt-2 md:pt-6  md:pl-6 w-full'>
-          <div className='flex align-middle text-center mb-2 mt-2'>
+        <div className='pt-2 md:pt-6  md:pl-6 w-full body-content'>
+          <div className='flex align-middle  mb-2 mt-2'>
 
+            <div>
+              <div>
+                <div onClick={() => {
+                  setShowLeftPanel(true)
+                  showDrawer()
+                }}
+                  className='block md:hidden text-xl pl-2'>
+                  <MenuOutlined />
+                </div>
+
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorBgBase: "#1e293b",
+                      colorText: "#ffffff",
+                      colorLink: "#ffffff",
+                      colorIcon: "FF00FF",
+                    },
+                  }}
+                >
+                  <Drawer
+                    title="Close Product Search"
+                    placement="left"
+                    width={300}
+
+                    onClose={onClose}
+                    open={open}>
+                    <LeftPanelPortal params={{
+                      getCategoryClicked,
+                      getProvinceClicked,
+                      getCityClicked,
+                      setSelectedCategory,
+                      selected_category,
+                      setSelectedProvince,
+                      selected_province,
+                      setSelectedCity,
+                      selected_city,
+                      setReloadData,
+                      reload_data,
+                      province_id,
+                      city_id,
+                      setCities,
+                      cities,
+                      page_loaded,
+                      onClose
+
+                    }} />
+                    {/* <LeftPanel params={{ showLeftPanel, openLeftPanel, onClose }} /> */}
+                  </Drawer>
+                </ConfigProvider>
+
+              </div>
+            </div>
             {page_loaded ? products.length === 0 ?
 
-              <div className='flex items-center ml-5 md:ml-0'>
-                <div className='text-2xl'>
-                  <ExclamationCircleOutlined />
-                </div>
-                <div className='ml-2 text-left'>
-                  No result found. Please select other cities or <span onClick={() => {
-                    setSelectedProvince({} as Province)
-                    setCities([])
-                    setSelectedCity({} as City)
-                    setSelectedCategory({} as Category)
-                    getCategoryClicked({} as Category)
-                    getProvinceClicked({} as Province)
-                    getCityClicked({} as City)
-                    setReloadData(!reload_data)
-                  }} className='text-blue-500'>display all products</span>.
-                </div>
+              <div className='ml-3'>
+                {products_loaded ?
+                  <div>
+                    <div className='flex items-center ml-2 md:ml-0'>
+                      <div className='text-2xl'>
+                        <ExclamationCircleOutlined />
+                      </div>
+                      <div className='ml-2'>
+                        No Products Found.
+                      </div>
+                    </div>
+                    <div>
+                      <div className='ml-2 text-left'>
+                        Select other cities or <span onClick={() => {
+                          setSelectedProvince({} as Province)
+                          setCities([])
+                          setSelectedCity({} as City)
+                          setSelectedCategory({} as Category)
+                          getCategoryClicked({} as Category)
+                          getProvinceClicked({} as Province)
+                          getCityClicked({} as City)
+                          setReloadData(!reload_data)
+                          setProductsLoaded(false)
+                        }} className='text-blue-500'>display all products</span>.
+                      </div>
+                    </div>
+                  </div>
+                  : ""}
+
+                {products_loaded ? "" :
+                  <div className='mt-0'>
+                    <Spin />
+                    <span className='ml-2'>Loading...</span>
+                  </div>
+                }
               </div>
               :
               <div className='flex items-center'>
-                <div>
-                  <div onClick={() => {
-                    setShowLeftPanel(true)
-                    showDrawer()
-                  }} 
-                  className='block md:hidden text-xl pl-2'>
-                    <MenuOutlined />
-                  </div>
 
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorBgBase: "#1e293b",
-                        colorText: "#ffffff",
-                        colorLink: "#ffffff",
-                        colorIcon: "FF00FF",
-                      },
-                    }}
-                  >
-                    <Drawer
-                      title="Close Product Search"
-                      placement="left"
-                      width={300}
-
-                      onClose={onClose}
-                      open={open}>
-                      <LeftPanelPortal params={{
-                        getCategoryClicked,
-                        getProvinceClicked,
-                        getCityClicked,
-                        setSelectedCategory,
-                        selected_category,
-                        setSelectedProvince,
-                        selected_province,
-                        setSelectedCity,
-                        selected_city,
-                        setReloadData,
-                        reload_data,
-                        province_id,
-                        city_id,
-                        setCities,
-                        cities,
-                        page_loaded
-
-                      }} />
-                      {/* <LeftPanel params={{ showLeftPanel, openLeftPanel, onClose }} /> */}
-                    </Drawer>
-                  </ConfigProvider>
-
-                </div>
                 <div className='ml-3'>
-                  Displaying page {current_page} of {Math.ceil(total_products / take)} from {
-                    selected_province?.id === undefined ? "Pakistan" : selected_province?.name
-                  } {
-                    selected_city?.id === undefined ? "" : <span> <span className='text-sm'><RightOutlined /></span> {selected_city.name}</span>
+                  {products_loaded === false ?
+                    <div className='mr-2'>
+                      <div className='flex'>
+                        <Spin /> <span className='ml-2'>Searching. Please wait...</span>
+                      </div>
+                    </div> :
+
+                    <div>
+                      Displaying page {current_page} of {Math.ceil(total_products / take)} from {
+                        selected_province?.id === undefined ? "Pakistan" : selected_province?.name
+                      } {
+                        selected_city?.id === undefined ? "" : <span> <span className='text-sm'><RightOutlined /></span> {selected_city.name}</span>
+                      }
+                    </div>
                   }
                 </div>
               </div>
@@ -266,10 +304,8 @@ export default function Home() {
               }
             </div>
           </div> : <div className='flex mb-0 ml-3 md:ml-0'>
-            <Spin /><span className='ml-2'>loading...</span>
+            <Spin /><span className='ml-2'>Loading...</span>
           </div>}
-
-          xx
         </div>
 
       </div>

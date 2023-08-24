@@ -19,7 +19,7 @@ export default function BrowseByCities() {
         const getData = async () => {
             const fetch_province = await fetch("/api/public/provinces", { 
                 method:"POST",
-                next: { revalidate: 10 } 
+                next: { revalidate: 60 } 
             });
             const response_province = await fetch_province.json();
             setProvinces(response_province.data)
@@ -31,7 +31,7 @@ export default function BrowseByCities() {
     return (
         <div className='' style={{ width: "100%" }}>
          
-            <div className='text-black bg-white p-3 sm:p-5 pb-5' >
+            <div className='text-black bg-white p-3 sm:p-5 pb-5 body-content' >
                 <section>
                     {page_loaded ?
                         <div className='flex flex-wrap md:flex-nowrap'>

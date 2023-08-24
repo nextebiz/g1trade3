@@ -22,7 +22,10 @@ export default function ManageProducts() {
     console.log(product_id)
 
     const fetch_delete_product = await fetch("/api/seller/products/delete_product",
-      { method: "POST", body: form_data });
+      {
+        method: "POST", body: form_data,
+        next: { revalidate: 60 }
+      });
 
     const response_delete = await fetch_delete_product.json()
     console.log(response_delete)
@@ -51,7 +54,9 @@ export default function ManageProducts() {
       form_data.set("user_id", user_id)
       const get_products = await fetch("/api/seller/products/find_products", {
         method: "post",
-        body: form_data
+        body: form_data,
+        next: { revalidate: 60 }
+
       })
       const products = await get_products.json()
       if (products.status === 200) {
@@ -71,7 +76,9 @@ export default function ManageProducts() {
         form_data.set("id", my_session?.user.id);
         const fetch_user = await fetch("/api/myadmin/users/find_user", {
           method: "POST",
-          body: form_data
+          body: form_data,
+          next: { revalidate: 60 }
+
         })
         const user_response = await fetch_user.json();
         if (user_response) {

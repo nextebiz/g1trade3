@@ -97,7 +97,11 @@ export default function ProductDisplay() {
       form_data.set("product_id", product?.id)
       form_data.set("user_id", user?.id)
 
-      const fetch_save = await fetch("/api/public/products/product/like", { method: "POST", body: form_data })
+      const fetch_save = await fetch("/api/public/products/product/like", {
+        method: "POST",
+        body: form_data,
+        next: { revalidate: 60 }
+      })
 
       const response_save = await fetch_save.json();
       if (response_save.status === 200) {
@@ -126,7 +130,11 @@ export default function ProductDisplay() {
     form_data.set("user_id", user?.id.toString())
 
 
-    const fetch_save = await fetch("/api/buyer/orders/place_order", { method: "POST", body: form_data })
+    const fetch_save = await fetch("/api/buyer/orders/place_order", {
+      method: "POST",
+      body: form_data,
+      next: { revalidate: 60 }
+    })
     const response_save = await fetch_save.json();
 
     setIsSaving(false)
@@ -146,7 +154,12 @@ export default function ProductDisplay() {
     form_data.set("buyer_id", user?.id)
     form_data.set("product_id", product?.id)
 
-    const fetch_orders = await fetch("/api/buyer/orders/find_orders_by_product_id", { method: "POST", body: form_data })
+    const fetch_orders = await fetch("/api/buyer/orders/find_orders_by_product_id", {
+      method: "POST",
+      body: form_data,
+      next: { revalidate: 60 }
+
+    })
     const response_orders = await fetch_orders.json();
     if (response_orders.status === 200) {
       setOrders(response_orders.data)
@@ -169,7 +182,11 @@ export default function ProductDisplay() {
       form_data.set("buyer_id", get_user?.id as string)
 
       const fetch_product = await fetch("/api/public/products/product",
-        { method: "POST", body: form_data });
+        {
+          method: "POST",
+          body: form_data,
+          next: { revalidate: 60 }
+        });
       const response_product = await fetch_product.json()
       if (response_product.like === "yes") {
         setLike(true)
@@ -184,10 +201,10 @@ export default function ProductDisplay() {
         if (found_product.images.length > 0) {
           setSelectedImageUrl(get_cover_image(response_product.data)?.url as string)
         } else {
-          if (found_product.Category.name == "G1 Garlic Dry") {
+          if (found_product.Category?.name == "G1 Garlic Dry") {
             setSelectedImageUrl("/images/g1garlic-dry-no-image.jpg")
           }
-          if (found_product.Category.name == "G1 Garlic Fresh (Wet)") {
+          if (found_product.Category?.name == "G1 Garlic Fresh (Wet)") {
             setSelectedImageUrl("/images/g1garlic-wet-no-image.jpg")
           }
         }
@@ -240,23 +257,23 @@ export default function ProductDisplay() {
           {page_loaded ?
 
             <div className='flex flex-wrap md:flex-nowrap'>
-              <div className='md:flex-1'>
+              <div className='md:flex-1 w-full'>
 
                 <div className='flex w-full bg-slate-300 mb-3 md:mb-0'>
                   <div className='bg-slate-300 flex-1  border-r border-r-slate-400'>
-                    <img src={selected_image_url} alt='img' className='p-2 w-full' />
+                    <img src={selected_image_url} alt='img' className='p-1 md:p-2 w-full' />
                   </div>
 
                   {product.images.length > 1 ?
-                    <div className='flex flex-col justify-center w-24 h-full bg-slate-300 p-2'>
+                    <div className='flex flex-col justify-center w-16 md:w-24 h-full bg-slate-300 p-1 md:p-2'>
                       {product?.images?.map((my_image: any) => {
                         return <div key={my_image.id}
                           onClick={() => {
                             setSelectedImageUrl(my_image?.url)
 
                           }}
-                          className='mb-2 cursor-pointer'>
-                          <img src={my_image?.url} alt='img' className=' rounded-lg' />
+                          className='mb-1 md:mb-2 cursor-pointer'>
+                          <img src={my_image?.url} alt='img' className=' md:rounded-lg' />
                         </div>
                       })}
 
@@ -746,7 +763,7 @@ export default function ProductDisplay() {
                 </div>
                 <div className='flex flex-wrap text-sm px-3'>
                   <div>
-                    {product.Category.name}
+                    {product.Category?.name}
                   </div>
                   <div className=''>
                     &nbsp;is available for sale in&nbsp;

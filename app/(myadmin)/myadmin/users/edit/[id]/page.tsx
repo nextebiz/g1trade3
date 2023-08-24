@@ -39,10 +39,11 @@ export default function EditPage() {
         form_data.set("user", JSON.stringify(user));
         const find_user = await fetch("/api/myadmin/users/find_user/update", {
             method: "POST",
-            body: form_data
+            body: form_data,
+            next: { revalidate: 60 }
         })
         const result = await find_user.json();
-        if (result.status === 200) { 
+        if (result.status === 200) {
             router.push("/myadmin/users?msg=updated_user");
             // redirect("/myadmin/users")
         }
@@ -64,7 +65,8 @@ export default function EditPage() {
             const user_function = async () => {
                 const find_user = await fetch("/api/myadmin/users/find_user", {
                     method: "post",
-                    body: form_data
+                    body: form_data,
+                    next: { revalidate: 60 }
                 })
                 const user_data = await find_user.json();
                 if (user_data.status === 200) {

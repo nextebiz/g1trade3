@@ -1,10 +1,45 @@
 'use client'
-import React from 'react'
-import { IdcardOutlined, MessageOutlined, ProfileOutlined, AppstoreAddOutlined, AppstoreOutlined, ShoppingCartOutlined } from "@ant-design/icons"
+import React, { useEffect, useState } from 'react'
+import { CheckCircleFilled, CheckCircleOutlined, IdcardOutlined, MessageOutlined, ExclamationCircleOutlined, AppstoreAddOutlined, AppstoreOutlined, ShoppingCartOutlined } from "@ant-design/icons"
 import Link from 'next/link'
+import { get_user_from_session } from '@/utils/getUserData'
+import { Spin } from 'antd'
 
 
 export default function SellerDashboard() {
+
+    const [user, setUser] = useState({} as User)
+    const [ads_count, setAdsCount] = useState(0)
+    const [page_loaded, setPageLoaded] = useState(false)
+
+
+
+
+    useEffect(() => {
+
+        const getSellerInfo = async (user_id: string) => {
+            const form_data = new FormData()
+            form_data.set("user_id", user_id)
+            const get_seller_info = await fetch("/api/seller/dashboard/basic_info", {
+                method: "POST",
+                body: form_data
+            })
+            const response_seller_info = await get_seller_info.json()
+            if (response_seller_info) {
+                setAdsCount(response_seller_info.data.product_count)
+            }
+            setPageLoaded(true)
+        }
+        const getUser = async () => {
+            const get_user: User = await get_user_from_session()
+            if (get_user) {
+                setUser(get_user)
+                getSellerInfo(get_user.id)
+            }
+        }
+        getUser();
+    }, [])
+
     return (
         <div className='' style={{ width: "100%" }}>
             <div style={{ height: "60px" }} className='bg-slate-700 flex items-center'>
@@ -16,24 +51,103 @@ export default function SellerDashboard() {
             <div className='text-black  p-1'>
                 <section>
                     <div className="relative items-center w-full px-1 py-12 mx-auto md:px-12 lg:px-24 max-w-7xl">
+                        <div className='text-2xl p-5'>
+                            <div>
+                                <span>SELLER DASHBOARD</span>
+                                {page_loaded ? "" :
+                                    <span className='ml-2'>
+                                        <Spin />
+                                        <span className='text-sm ml-2'>Loading...</span>
+                                    </span>
+                                }
+                            </div>
+
+                            {user?.id ?
+                                <div className='text-sm'>Welcome {user?.name}</div>
+                                : ""}
+                        </div>
+
                         <div className="grid w-full grid-cols-1 gap-2 mx-auto md:grid-cols-1  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
 
                             <div className="p-6 border rounded-lg shadow shaodw-xl">
                                 <div className="inline-flex items-center justify-center  w-12 h-12 mx-auto mb-5 text-blue-600 rounded-full bg-blue-50">
                                     <AppstoreAddOutlined className='text-2xl' />
                                 </div>
-                                <h1 className="mx-auto mb-8 text-xl font-semibold leading-none tracking-tighter text-neutral-600 lg:text-xl">
-                                    Upload New Product
-                                </h1>
+                                <div className='mb-8'>
+                                    <h1 className="mx-auto  text-xl font-semibold leading-none tracking-tighter text-neutral-600 lg:text-xl">
+                                        Upload New Product
+                                    </h1>
 
-                                <p className="mx-auto text-base leading-relaxed text-gray-500">
-                                    Easily upload product with images, description, price and available quantity
-                                </p>
-                                <div className="mt-4">
-                                    <Link href="/seller/add_product" className="inline-flex items-center mt-4 font-semibold text-blue-600 lg:mb-0 hover:text-neutral-600" title="read more">
-                                        Upload Product Page »
-                                    </Link>
+                                    {user?.id ?
+                                        <div>You are allowed to upload {user?.numberOfAllowedAds} Ads </div>
+                                        : ""
+                                    }
+
+                                    {page_loaded ?
+                                        <div>
+                                            {ads_count >= user?.numberOfAllowedAds ?
+                                                <div>
+                                                    <div className='text-green-500'>
+                                                        {ads_count}
+                                                        <span className='mx-1'>of</span>{user?.numberOfAllowedAds} ads are Live
+                                                    </div>
+                                                    <div className='border p-2 px-4'>
+                                                        <div className='text-red-500'>
+                                                            <span className='mr-2'>
+                                                                <ExclamationCircleOutlined />
+                                                            </span>
+                                                            <span>
+                                                                Your ads quota is full
+                                                            </span>
+                                                        </div>
+                                                        <Link target='_blank' href={'/contact'}>
+                                                            <span className='text-blue-500'>Contact us </span>
+                                                            <span>to increase ads limit</span>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                                :
+                                                <div className='text-green-500'>
+                                                    <span className='mr-2'><CheckCircleOutlined /></span>
+                                                    <span>
+                                                        {ads_count} of {user?.numberOfAllowedAds} ads are live
+                                                    </span>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        : <div className="mt-4">
+                                            <div className='flex items-center'>
+                                                <div>
+                                                    <Spin />
+                                                </div>
+                                                <div className='text-sm ml-2'>Loading. Please wait...</div>
+                                            </div>
+                                        </div>
+                                    }
+
+
                                 </div>
+                                <p className="mx-auto text-base leading-relaxed text-gray-500">
+                                    Upload product with images, description, price, available stock and further details
+                                </p>
+                                {page_loaded ?
+
+                                    <div className="mt-4">
+                                        <Link href="/seller/add_product" className="inline-flex items-center mt-4 font-semibold text-blue-600 lg:mb-0 hover:text-neutral-600" title="read more">
+                                            Upload Product Page »
+                                        </Link>
+                                    </div>
+
+                                    : <div className="mt-4">
+                                        <div className='flex items-center'>
+                                            <div>
+                                                <Spin />
+                                            </div>
+                                            <div className='text-sm ml-2'>Loading. Please wait...</div>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                             <div className="p-6 border rounded-lg shadow shaodw-xl">
                                 <div className="inline-flex items-center justify-center  w-12 h-12 mx-auto mb-5 text-blue-600 rounded-full bg-blue-50">
@@ -57,7 +171,7 @@ export default function SellerDashboard() {
                                     <ShoppingCartOutlined className='text-2xl' />
                                 </div>
                                 <h1 className="mx-auto mb-8 text-xl font-semibold leading-none tracking-tighter text-neutral-600 lg:text-xl">
-                                    My Orders
+                                    View Orders
                                 </h1>
 
                                 <p className="mx-auto text-base leading-relaxed text-gray-500">

@@ -55,7 +55,9 @@ export default function VerifyInfo() {
 
     const fetch_save = await fetch("/api/buyer/verify_info", {
       method: "POST",
-      body: form_data
+      body: form_data,
+      next: { revalidate: 60 } 
+
     })
     const response_save = await fetch_save.json();
 

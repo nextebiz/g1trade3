@@ -22,7 +22,8 @@ interface Props {
         city_id: string,
         setCities: (cities: City[]) => void,
         cities: City[],
-        page_loaded: boolean
+        page_loaded: boolean,
+        onClose: () => void
     }
 }
 
@@ -42,7 +43,8 @@ export default function LeftPanelPortal({ params: {
     city_id,
     setCities,
     cities,
-    page_loaded
+    page_loaded,
+    onClose
 } }: Props) {
 
     const router = useRouter();
@@ -84,9 +86,9 @@ export default function LeftPanelPortal({ params: {
             const fetch_cats = await fetch("/api/public/categories");
             const response_cats = await fetch_cats.json();
             setCategories(response_cats.data)
-            const fetch_province = await fetch("/api/public/provinces", { 
-                method:"POST",
-                next: { revalidate: 10 } 
+            const fetch_province = await fetch("/api/public/provinces", {
+                method: "POST",
+                next: { revalidate: 60 }
             });
             const response_province = await fetch_province.json();
             setProvinces(response_province.data)
@@ -122,6 +124,8 @@ export default function LeftPanelPortal({ params: {
                                         setSelectedCategory({} as Category)
                                         getCategoryClicked({} as Category)
                                         setReloadData(!reload_data)
+                                        onClose()
+
                                     }}
                                         className='cursor-pointer hover:text-green-500 transition-all'>
                                         <CloseCircleOutlined className='text-lg' />
@@ -143,6 +147,7 @@ export default function LeftPanelPortal({ params: {
                                             getProvinceClicked({} as Province)
                                             getCityClicked({} as City)
                                             setReloadData(!reload_data)
+                                            onClose()
 
                                         }}
                                         className='hover:text-green-500 cursor-pointer'>
@@ -160,6 +165,8 @@ export default function LeftPanelPortal({ params: {
                                             setSelectedCity({} as City)
                                             getCityClicked({} as City)
                                             setReloadData(!reload_data)
+                                            onClose()
+
 
                                         }}
                                         className='cursor-pointer hover:text-green-500'>
@@ -180,6 +187,8 @@ export default function LeftPanelPortal({ params: {
                                 getProvinceClicked({} as Province)
                                 getCityClicked({} as City)
                                 setReloadData(!reload_data)
+                                onClose()
+
 
                             }} className='cursor-pointer hover:text-green-500'>
                                 <ReloadOutlined className='text-md' /> <span className='ml-2'>Reset Search</span>
@@ -206,6 +215,7 @@ export default function LeftPanelPortal({ params: {
                                                     setSelectedCategory(cat)
                                                     getCategoryClicked(cat)
                                                     setReloadData(!reload_data)
+                                                    onClose()
 
                                                 }}>{cat.name}</div>
                                             </div>
@@ -244,6 +254,8 @@ export default function LeftPanelPortal({ params: {
                                                 setSelectedProvince(province)
                                                 setCities(province.city)
                                                 setReloadData(!reload_data)
+                                            onClose()
+
                                             }}
                                         >
                                             <div className={`${province._count.product == 0 ? "opacity-40" : "opacity-100"}`}>{province.name}<span className={`ml-2 text-xs`}>({province._count.product})</span></div>
@@ -278,6 +290,7 @@ export default function LeftPanelPortal({ params: {
                                         setSelectedCity(city)
                                         getCityClicked(city)
                                         setReloadData(!reload_data)
+                                        onClose()
 
                                     }}
                                 >

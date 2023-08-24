@@ -52,7 +52,9 @@ export default function SellerProfile() {
 
     const fetch_save = await fetch("/api/buyer/verify_info", {
       method: "POST",
-      body: form_data
+      body: form_data,
+      next: { revalidate: 60 } 
+
     })
     const response_save = await fetch_save.json();
     if (response_save.status === 200) {
@@ -85,7 +87,11 @@ export default function SellerProfile() {
         const form_data = new FormData();
         form_data.set("user_id", get_user.id)
 
-        const fetch_profile = await fetch("/api/seller/profile", { method: "POST", body: form_data })
+        const fetch_profile = await fetch("/api/seller/profile", { 
+          method: "POST", 
+          body: form_data,
+          next: { revalidate: 60 } 
+        })
         const response_profile = await fetch_profile.json();
 
         if (response_profile.status === 200) {

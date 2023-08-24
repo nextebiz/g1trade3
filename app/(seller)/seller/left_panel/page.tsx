@@ -26,7 +26,11 @@ export default function LeftPanel({ params: { showLeftPanel, openLeftPanel, onCl
 
       const form_data = new FormData();
       form_data.set("user_id", getSessionUser?.id);
-      const fetch_count = await fetch("/api/seller/orders/count", { method: "POST", body: form_data })
+      const fetch_count = await fetch("/api/seller/orders/count", {
+        method: "POST",
+        body: form_data,
+        next: { revalidate: 60 }
+      })
       const response_count = await fetch_count.json();
       setOrderCount(response_count.data.count)
     }

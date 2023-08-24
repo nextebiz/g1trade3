@@ -64,7 +64,11 @@ export default function UploadComponent({ params: { imageProduct, save_default_i
         form_data.set("public_id", init_data.public_id)
 
         const fetch_delete = await fetch("/api/seller/products/delete_image",
-            { method: "POST", body: form_data });
+            {
+                method: "POST",
+                body: form_data,
+                next: { revalidate: 60 }
+            });
         const delete_response = await fetch_delete.json();
         if (delete_response.status === 200) {
             setInitData(init_data => {
@@ -74,9 +78,9 @@ export default function UploadComponent({ params: { imageProduct, save_default_i
         setOpen(false);
         setConfirmLoading(false);
 
-       
+
     };
-    
+
 
     const confirm = async (image_id: string) => {
         // message.success('Click on Yes');
@@ -204,7 +208,9 @@ export default function UploadComponent({ params: { imageProduct, save_default_i
 
                 const fetch_upload = await fetch("/api/seller/products/upload_image", {
                     method: "POST",
-                    body: form_data
+                    body: form_data,
+                    next: { revalidate: 60 }
+
                 })
                 const fetch_result = await fetch_upload.json();
                 // setInitData(init_data => {

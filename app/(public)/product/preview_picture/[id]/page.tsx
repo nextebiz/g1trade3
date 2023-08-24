@@ -21,7 +21,9 @@ export default function PreviewPicture() {
                 form_data.set("picture_id", id as string)
                 const fetch_image = await fetch("/api/public/products/product/image", {
                     method: "POST",
-                    body: form_data
+                    body: form_data,
+                    next: { revalidate: 60 }
+
                 })
                 const response_image = await fetch_image.json();
                 if (response_image.status === 200) {
@@ -47,11 +49,11 @@ export default function PreviewPicture() {
             <div className='text-black bg-white p-0 sm:p-5 pb-5' style={{ minHeight: "400px" }}>
                 <section>
                     {page_loaded ?
-                        picture_url === "" ? 
-                        <div>
-                            Picture not found!
-                        </div>
-                        :
+                        picture_url === "" ?
+                            <div>
+                                Picture not found!
+                            </div>
+                            :
                             <img src={picture_url} />
                         : <div>
                             <Spin /> <span className='ml-2'>Loading...</span>

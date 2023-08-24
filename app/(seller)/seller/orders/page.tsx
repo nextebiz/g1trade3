@@ -78,7 +78,11 @@ export default function SellerOrders() {
     form_data.set("order_action", selected_order.orderAction)
     form_data.set("seller_comments", selected_order.sellerComments)
 
-    const fetch_order_update = await fetch("/api/seller/orders/update", { method: "POST", body: form_data })
+    const fetch_order_update = await fetch("/api/seller/orders/update", {
+      method: "POST",
+      body: form_data,
+      next: { revalidate: 60 }
+    })
     const response_update = await fetch_order_update.json()
     setCounter(counter => counter + 1)
     setIsModalOpen(false);
@@ -109,7 +113,11 @@ export default function SellerOrders() {
       if (order_action !== "") {
         form_data.set("order_action", order_action)
       }
-      const get_orders = await fetch("/api/seller/orders/find_orders", { method: "POST", body: form_data })
+      const get_orders = await fetch("/api/seller/orders/find_orders", {
+        method: "POST",
+        body: form_data,
+        next: { revalidate: 60 }
+      })
       const response_orders = await get_orders.json()
       setOrders(response_orders.data.orders)
       // setOrders(orders=>{

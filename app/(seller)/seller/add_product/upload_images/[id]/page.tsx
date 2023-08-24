@@ -29,7 +29,9 @@ export default function UploadImages() {
 
         const fetch_save_default_image = await fetch("/api/seller/products/set_default_image", {
             method: "POST",
-            body: form_data
+            body: form_data,
+            next: { revalidate: 60 } 
+
         })
 
         const response_save_default_image = await fetch_save_default_image.json();

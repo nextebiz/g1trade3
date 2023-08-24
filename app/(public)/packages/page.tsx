@@ -33,28 +33,35 @@ export default function SellerPackages() {
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
-                  </span>Browse G1 Garlic Posts
+                  </span>Browse and select the best G1 Garlic seller
                 </p>
                 <p className="flex items-center text-gray-200 mb-2">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
-                  </span>Contact Sellers and Request More Info
+                  </span>Contact sellers via phone or WhatsApp and request more information
                 </p>
                 <p className="flex items-center text-gray-200 mb-2">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
-                  </span>Place Your Order Online and Rate The Seller
+                  </span>Talk to clients via phone or WhatsApp before placing your first order
+                </p>
+                <p className="flex items-center text-gray-200 mb-2">
+                  <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">
+                    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </span>Rate your seller with star rating and feedback for public viewing
                 </p>
                 <p className="flex items-center text-gray-200 mb-6">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
-                  </span>Rate Your Seller For Public Viewing
+                  </span>Track the status of your order
                 </p>
                 <button onClick={() => {
                   if (session?.user) {
@@ -105,7 +112,7 @@ export default function SellerPackages() {
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
-                  </span>Includes One Ad Posts with At-least One City Option
+                  </span>Includes One Ad Posts with One City Option. You can upgrade the package to add more cities per ad.
                 </p>
                 <p className="flex items-center text-gray-200 mb-2">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">
@@ -113,6 +120,13 @@ export default function SellerPackages() {
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                   </span>Additional City Listing @ Rs 1000 per City
+                </p>
+                <p className="flex items-center text-gray-200 mb-2">
+                  <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">
+                    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </span>Additional Ad Listing @ Rs 2500 per ad
                 </p>
                 <p className="flex items-center text-gray-200 mb-6">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">

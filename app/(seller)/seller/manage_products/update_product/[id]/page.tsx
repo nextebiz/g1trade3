@@ -66,7 +66,10 @@ export default function UpdateProduct() {
         formData.set("receiveOffers", product.receiveOffers.toString())
         formData.set("description", product.description)
 
-        const update_product = await fetch("/api/seller/products/update", { method: "post", body: formData })
+        const update_product = await fetch("/api/seller/products/update", {
+            method: "post", body: formData,
+            next: { revalidate: 60 }
+        })
         const result = await update_product.json()
         if (result.status == 200) {
             const product_id = result.data.id;
@@ -103,7 +106,9 @@ export default function UpdateProduct() {
                 form_data.set("id", my_session?.user.id);
                 const fetch_user = await fetch("/api/myadmin/users/find_user", {
                     method: "POST",
-                    body: form_data
+                    body: form_data,
+                    next: { revalidate: 60 }
+
                 })
                 const user_response = await fetch_user.json();
                 if (user_response) {
@@ -115,7 +120,9 @@ export default function UpdateProduct() {
                     // compare user from product and session. if user id matches, its ok, othewise, signout
                     const fetch_product = await fetch("/api/seller/products/find_product", {
                         method: "POST",
-                        body: form_data_product
+                        body: form_data_product,
+                        next: { revalidate: 60 }
+
                     })
                     const response_fetch_product = await fetch_product.json();
                     if (response_fetch_product.status === 404) {
@@ -135,9 +142,9 @@ export default function UpdateProduct() {
                         const cats = await fetch_cats.json()
                         setCategories(cats.data)
 
-                        const fetch_provinces = await fetch("/api/public/provinces", { 
-                            method:"POST",
-                            next: { revalidate: 10 } 
+                        const fetch_provinces = await fetch("/api/public/provinces", {
+                            method: "POST",
+                            next: { revalidate: 60 }
                         });
                         const response_provinces = await fetch_provinces.json()
                         const my_provinces: Province[] = response_provinces.data as Province[]

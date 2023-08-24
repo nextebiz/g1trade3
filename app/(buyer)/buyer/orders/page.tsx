@@ -51,7 +51,11 @@ export default function BuyerOrders() {
 
       form_data.set("skip", skip.toString())
 
-      const get_orders = await fetch("/api/buyer/orders/find_orders", { method: "POST", body: form_data })
+      const get_orders = await fetch("/api/buyer/orders/find_orders", { 
+        method: "POST", 
+        body: form_data,
+        next: { revalidate: 60 } 
+       })
       const response_orders = await get_orders.json()
       setOrders(response_orders.data.orders)
       setTotal(response_orders.data.total)
