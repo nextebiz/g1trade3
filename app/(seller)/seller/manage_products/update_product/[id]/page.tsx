@@ -92,9 +92,6 @@ export default function UpdateProduct() {
         })
     };
 
-    type FieldType = {
-        product_title?: string;
-    };
 
     useEffect(() => {
         const get_session = async () => {
@@ -219,7 +216,7 @@ export default function UpdateProduct() {
                                 >
 
                                     <div>Product Title</div>
-                                    <Form.Item<FieldType>
+                                    <Form.Item
                                         name="product_title"
                                         initialValue={product.title}
                                         rules={[{ required: true, message: 'Product Title is required' }]}
@@ -370,7 +367,7 @@ export default function UpdateProduct() {
 
                                         <div className='flex-1 mr-3'>
                                             <div>Price</div>
-                                            <Form.Item<FieldType>
+                                            <Form.Item
                                                 initialValue={product.price}
                                                 name="price_of_item"
                                                 rules={[{ required: true, message: 'Total Price of items' }]}
@@ -425,7 +422,7 @@ export default function UpdateProduct() {
                                         <div className='flex-1 mr-3'>
                                             <div></div>
                                             <div>Weight</div>
-                                            <Form.Item<FieldType>
+                                            <Form.Item
 
                                                 name="weight_of_item"
                                                 initialValue={product.weight}
@@ -475,7 +472,7 @@ export default function UpdateProduct() {
                                         </div>
                                     </div>
 
-                                    {/* <Form.Item<FieldType>
+                                    {/* <Form.Item
                                         name="receive_offers"
                                     // initialValue={product.receiveOffers}
 
@@ -489,7 +486,7 @@ export default function UpdateProduct() {
                                         </div>
                                     </Form.Item> */}
                                     <div>Product Description</div>
-                                    <Form.Item<FieldType>
+                                    <Form.Item
                                         name="description"
                                         initialValue={product.description}
                                         rules={[{ required: true, message: 'Product Description is required' }]}

@@ -83,9 +83,7 @@ export default function UploadNewProduct() {
   const onSubmit = () => {
 
   }
-  type FieldType = {
-    product_title?: string;
-  };
+
 
   const success = () => {
     messageApi.open({
@@ -169,7 +167,7 @@ export default function UploadNewProduct() {
             >
 
               <div>Product Title</div>
-              <Form.Item<FieldType>
+              <Form.Item
                 name="product_title"
                 rules={[{ required: true, message: 'Product Title is required' }]}
               >
@@ -307,7 +305,7 @@ export default function UploadNewProduct() {
 
                 <div className='flex-1 mr-3'>
                   <div>Price</div>
-                  <Form.Item<FieldType>
+                  <Form.Item
 
                     name="price_of_item"
                     rules={[{ required: true, message: 'Total Price of items' }]}
@@ -352,7 +350,7 @@ export default function UploadNewProduct() {
                 <div className='flex-1 mr-3'>
                   <div></div>
                   <div>Weight</div>
-                  <Form.Item<FieldType>
+                  <Form.Item
 
                     name="weight_of_item"
                     rules={[{ required: true, message: 'Total Wegith of available items' }]}
@@ -392,7 +390,7 @@ export default function UploadNewProduct() {
                 </div>
               </div>
 
-              {/* <Form.Item<FieldType>
+              {/* <Form.Item
                 name="description"
               // rules={[{ required: true, message: 'Type product description' }]}
               >
@@ -404,7 +402,7 @@ export default function UploadNewProduct() {
 
               
               <div>Product Description</div>
-              <Form.Item<FieldType>
+              <Form.Item
                 name="description"
                 rules={[{ required: true, message: 'Product Description is required' }]}
               >
