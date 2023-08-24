@@ -39,6 +39,9 @@ export const metadata: Metadata = {
       url: '/favicon/apple-touch-icon.png',
     },
   ],
+  openGraph: {
+    images: 'https://www.g1trade.com/images/g1-garlic-for-sale.jpg',
+  }
 }
 
 // async function checkSession() {

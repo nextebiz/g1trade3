@@ -36,7 +36,10 @@ export const metadata: Metadata = {
             sizes: '180x180',
             url: '/favicon/apple-touch-icon.png',
         },
-    ]
+    ],
+    openGraph: {
+        images: 'https://www.g1trade.com/images/g1-garlic-for-sale.jpg',
+    }
 }
 
 interface Props {
