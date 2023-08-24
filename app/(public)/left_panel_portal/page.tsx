@@ -84,7 +84,10 @@ export default function LeftPanelPortal({ params: {
             const fetch_cats = await fetch("/api/public/categories");
             const response_cats = await fetch_cats.json();
             setCategories(response_cats.data)
-            const fetch_province = await fetch("/api/public/provinces");
+            const fetch_province = await fetch("/api/public/provinces", { 
+                method:"POST",
+                next: { revalidate: 10 } 
+            });
             const response_province = await fetch_province.json();
             setProvinces(response_province.data)
             setMenuLoaded(true)

@@ -135,7 +135,10 @@ export default function UpdateProduct() {
                         const cats = await fetch_cats.json()
                         setCategories(cats.data)
 
-                        const fetch_provinces = await fetch("/api/public/provinces")
+                        const fetch_provinces = await fetch("/api/public/provinces", { 
+                            method:"POST",
+                            next: { revalidate: 10 } 
+                        });
                         const response_provinces = await fetch_provinces.json()
                         const my_provinces: Province[] = response_provinces.data as Province[]
                         setProvinces(my_provinces)

@@ -1,7 +1,7 @@
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function POST(req:Request, res:Response) {
 
     const provinces = await prisma.province.findMany({
         include: {

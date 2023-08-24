@@ -17,7 +17,10 @@ export default function BrowseByCities() {
     useEffect(() => {
 
         const getData = async () => {
-            const fetch_province = await fetch("/api/public/provinces");
+            const fetch_province = await fetch("/api/public/provinces", { 
+                method:"POST",
+                next: { revalidate: 10 } 
+            });
             const response_province = await fetch_province.json();
             setProvinces(response_province.data)
             setPageLoaded(true)

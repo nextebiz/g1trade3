@@ -131,7 +131,10 @@ export default function UploadNewProduct() {
       setCategories(cats.data)
     }
     const get_provinces = async () => {
-      const fetch_provinces = await fetch("/api/public/provinces")
+      const fetch_provinces = await fetch("/api/public/provinces", { 
+        method:"POST",
+        next: { revalidate: 10 } 
+    });
       const my_provinces = await fetch_provinces.json()
       setProvinces(my_provinces.data)
       setPageLoaded(true)
