@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { FieldTimeOutlined, ApartmentOutlined, MessageOutlined, ProfileOutlined, AppstoreAddOutlined, AppstoreOutlined, ShoppingCartOutlined, WhatsAppOutlined, PhoneOutlined } from "@ant-design/icons"
+import { StarOutlined, StarFilled, StarTwoTone, ApartmentOutlined, MessageOutlined, ProfileOutlined, AppstoreAddOutlined, AppstoreOutlined, ShoppingCartOutlined, WhatsAppOutlined, PhoneOutlined } from "@ant-design/icons"
 import {
-  Card, Spin, Button, Input, Select, Form,
+  Card, Spin, Button, Input, Select, Form, Rate, Modal
 } from 'antd';
 
 import { get_user_from_session } from '@/utils/getUserData';
@@ -17,10 +17,21 @@ const orderActions = [
   "CANCELLED"
 ]
 
+const { TextArea } = Input;
+
 export default function BuyerOrders() {
+
+  const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
+  const [star_value, setStarValue] = useState(3);
+  const [star_comment, setStarComment] = useState("")
+  const [selected_order, setSelectedOrder] = useState<Order>({} as Order)
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [user, setUser] = useState<User>({} as User)
   const [orders, setOrders] = useState<Order[]>([])
+  const [orders_loaded, setOrdersLoaded] = useState(false)
+
+
   const [page_loaded, setPageLoaded] = useState(false)
   const [order_action, setOrderAction] = useState<string>("PENDING")
   const [total, setTotal] = useState(0)
@@ -36,10 +47,45 @@ export default function BuyerOrders() {
   })
 
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+
+    // setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setSelectedOrder({} as Order)
+    setIsModalOpen(false);
+  };
+
+
+  const onFinish = async (values: any) => {
+
+    const form_data = new FormData();
+    form_data.set("user_id", user?.id)
+    form_data.set("message", star_comment)
+    form_data.set("stars", star_value.toString())
+    form_data.set("product_id", selected_order.product?.id)
+    form_data.set("order_id", selected_order.id)
+
+    const fetch_rate = await fetch("/api/buyer/orders/rate", {
+      method: "POST",
+      body: form_data,
+    })
+    const response_rate = await fetch_rate.json()
+    setCounter(counter => counter + 1)
+    setIsModalOpen(false);
+  }
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
 
   const getOrders = async () => {
     if (user?.id !== undefined) {
-
+      setOrdersLoaded(false)
       const form_data = new FormData()
       const user_id = user?.id
       form_data.set("user_id", user_id)
@@ -51,15 +97,17 @@ export default function BuyerOrders() {
 
       form_data.set("skip", skip.toString())
 
-      const get_orders = await fetch("/api/buyer/orders/find_orders", { 
-        method: "POST", 
+      const get_orders = await fetch("/api/buyer/orders/find_orders", {
+        method: "POST",
         body: form_data,
-        next: { revalidate: 60 } 
-       })
+        next: { revalidate: 300 }
+      })
       const response_orders = await get_orders.json()
       setOrders(response_orders.data.orders)
       setTotal(response_orders.data.total)
       setPageLoaded(true)
+      setOrdersLoaded(true)
+
       setTotals(totals => {
         return {
           ...totals,
@@ -138,145 +186,163 @@ export default function BuyerOrders() {
               <div className='py-5'>
                 <hr />
               </div>
-              {/* <div className='flex'>
-                <div className='mr-3 mt-1'>Search Orders:</div>
+
+              {orders_loaded ?
                 <div>
-                  <Form.Item
-                    className='w-52'
-
-                  >
-                    <Select
-                      placeholder="Select Order Status"
-                      className='w-44'
-                      value={order_action}
-                      onChange={(e) => {
-                        setOrderAction(e)
-                      }}
-                    // value={order.orderAction}
-                    >
-                      {orderActions.map(action => {
-                        return <Select.Option key={action} value={action}>
-                          {action}<span className='ml-2'></span>
-                          {action === "PENDING" ? totals.PENDING : ""}
-                          {action === "ACCEPTED" ? totals.ACCEPTED : ""}
-                          {action === "DELIVERED" ? totals.DELIVERED : ""}
-                          {action === "CANCELLED" ? totals.CANCELLED : ""}
-                        </Select.Option>
-                      })}
-                    </Select>
-                  </Form.Item>
-                </div>
-              </div> */}
-
-              {orders.length > 0 ?
-                <div>
-                  <div className='mb-5 text-lg'>
-                    {
-                      `${total} ${order_action === "" ? "Pending" : capitalizeWord(order_action.toLowerCase())} Orders`
-                    }
-                  </div>
-                  <div>
-                    {orders.map(order => {
-                      return <div key={order.id}>
-                        <Card
-                          style={{ marginTop: 0 }}
-                          type="inner"
-                          title={`Required Quantity: ${order.weight} ${order.weightUnit.toLowerCase()}`}
-                        // extra={<a href="#">More</a>}
-                        >
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Order Date:</div>
-                            <div className='ml-2'>
-                              {dayjs(Date.parse(order.createdAt.toString())).format("DD MMM YYYY")}
-                            </div>
-                          </div>
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Product Post:</div>
-                            <div className='ml-2'>
-                              <Link target='_blank' href={`/product/${order.product.id}`}> {order.product.title}</Link>
-                            </div>
-                          </div>
-
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Sold By:</div>
-                            <div className='ml-2'>
-                              {order.product.User.name}
-                            </div>
-                          </div>
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>{"Seller's Phone:"}</div>
-                            <div className='flex flex-row'>
-                              <span className='ml-2'><PhoneOutlined /></span>
-                              <a href={`tel:${order.product.User.phone1}`}>
-                                <div className='ml-2'>
-                                  {order.product.User.phone1}
-                                </div>
-                              </a>
-                            </div>
-                          </div>
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>{"Seller's WhatsApp:"}</div>
-                            <div className='flex flex-row'>
-                              <span className='ml-2'><WhatsAppOutlined /></span>
-                              <Link target='_blank' href={`//api.whatsapp.com/send?phone=${order.product.User.phone2}&text=${'hi there'}`}>
-
-                                <div className='ml-2'>
-                                  {order.product.User.phone2}
-                                </div>
-                              </Link>
-                            </div>
-
-                          </div>
-
-
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>My Note:</div>
-                            <div className='ml-2'>
-                              {order.note}
-                            </div>
-                          </div>
-
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Sellers Comments:</div>
-                            <div className='ml-2'>
-                              {order.sellerComments}
-                            </div>
-                          </div>
-                          <div className='flex flex-col md:flex-row items-start md:items-center'>
-                            <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Status:</div>
-                            <div className={`ml-2 order-status ${order.orderAction === "PENDING"
-                              ?
-                              "text-red-500"
-                              :
-                              order.orderAction === "ACCEPTED" ? "text-green-600" : ""
-                              }`}>
-                              {order.orderAction}
-                              {/* {order.orderAction} */}
-                              {/* <Form.Item id='order_select' className='w-32'
-                            >
-                              <Select
-                                onChange={(e) => {
-                                  update_order(order, e)
-                                }}
-                                value={order.orderAction} >
-                                {orderActions.map(action => {
-                                  return <Select.Option key={action} value={action}>{action}</Select.Option>
-                                })}
-                              </Select>
-                            </Form.Item> */}
-                            </div>
-                          </div>
-
-                        </Card>
-
+                  {orders.length > 0 ?
+                    <div>
+                      <div className='mb-5 text-lg'>
+                        {
+                          `${total} ${order_action === "" ? "Pending" : capitalizeWord(order_action.toLowerCase())} Orders`
+                        }
                       </div>
-                    })}
-                  </div>
+                      <div>
+                        {orders.map(order => {
+                          return <div key={order.id}>
+                            <Card
+                              style={{ marginTop: 0 }}
+                              type="inner"
+                              title={`Required Quantity: ${order.weight} ${order.weightUnit.toLowerCase()}`}
+                            // extra={<a href="#">More</a>}
+                            >
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Order Date:</div>
+                                <div className='ml-2'>
+                                  {dayjs(Date.parse(order.createdAt.toString())).format("DD MMM YYYY")}
+                                </div>
+                              </div>
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Product Post:</div>
+                                <div className='ml-2'>
+                                  <Link target='_blank' href={`/product/${order.product.id}`}> {order.product.title}</Link>
+                                </div>
+                              </div>
+
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Sold By:</div>
+                                <div className='ml-2'>
+                                  <span>{order.product.User.name}</span>
+
+
+                                </div>
+                              </div>
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>{"Seller's Phone:"}</div>
+                                <div className='flex flex-row'>
+                                  <span className='ml-2'><PhoneOutlined /></span>
+                                  <a href={`tel:${order.product.User.phone1}`}>
+                                    <div className='ml-2'>
+                                      {order.product.User.phone1}
+                                    </div>
+                                  </a>
+                                </div>
+                              </div>
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>{"Seller's WhatsApp:"}</div>
+                                <div className='flex flex-row'>
+                                  <span className='ml-2'><WhatsAppOutlined /></span>
+                                  <Link target='_blank' href={`//api.whatsapp.com/send?phone=${order.product.User.phone2}&text=${'hi there'}`}>
+
+                                    <div className='ml-2'>
+                                      {order.product.User.phone2}
+                                    </div>
+                                  </Link>
+                                </div>
+
+                              </div>
+
+
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>My Note:</div>
+                                <div className='ml-2'>
+                                  {order.note}
+                                </div>
+                              </div>
+
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Sellers Comments:</div>
+                                <div className='ml-2'>
+                                  {order.sellerComments}
+                                </div>
+                              </div>
+                              <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Status:</div>
+                                <div className={`ml-2 order-status ${order.orderAction === "PENDING"
+                                  ?
+                                  "text-red-500"
+                                  :
+                                  order.orderAction === "ACCEPTED" ? "text-green-600" : ""
+                                  }`}>
+                                  {order.orderAction}
+
+                                </div>
+
+                              </div>
+
+                              {order.product.rating.length > 0 ?
+                                <div>
+                                  <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                    <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Your Ratings:</div>
+                                    <div className='flex items-center'>
+                                      <span>
+                                        <Rate disabled defaultValue={order.product.rating[0].stars} />
+                                      </span>
+                                      <span className='ml-3'>
+                                        {order.product.rating[0].stars} <span className='ml-1'>Stars</span>
+                                      </span>
+                                    </div>
+                                    {/* {order.product.rating.map(rating => {
+                                      return <div key={rating.id} >
+                                        <Rate disabled defaultValue={rating.stars} />
+                                      </div>
+                                    })} */}
+                                  </div>
+                                </div>
+                                :
+                                <div>
+                                  {order_action === "ACCEPTED" || order_action === "DELIVERED" ?
+                                    <div className='flex flex-col md:flex-row items-start md:items-center'>
+                                      <div className='bg-slate-200 p-1 w-full md:w-40 mb-1'>Rate the seller:</div>
+                                      <div className={`ml-2 order-status ${order.orderAction === "PENDING"
+                                        ? "text-red-500" :
+                                        order.orderAction === "ACCEPTED" ? "text-green-600" : ""
+                                        }`}>
+                                        <Link href={""} onClick={
+                                          () => {
+                                            setSelectedOrder(order)
+                                            showModal()
+                                          }
+                                        }>
+                                          <span className='text-yellow-400 mr-2'>
+                                            <StarFilled />
+                                          </span>
+                                          <span className='ml-0'>
+
+                                            Rate The Seller</span>
+                                        </Link>
+                                      </div>
+                                    </div>
+                                    : ""}
+                                </div>
+                              }
+                            </Card>
+                          </div>
+                        })}
+                      </div>
+
+                    </div>
+                    : <div>
+                      No {order_action.toLowerCase()} ordres found
+                    </div>
+                  }
 
                 </div>
-                : <div>
-                  No {order_action.toLowerCase()} ordres found
+                :
+
+                <div>
+                  <Spin /><span className='text-sm ml-2'>Loading...</span>
                 </div>
+
               }
             </div>
             :
@@ -284,7 +350,7 @@ export default function BuyerOrders() {
               <Spin /><span className='text-sm ml-2'>Loading...</span>
             </div>
           }
-        </section>
+        </section >
 
 
         {(skip + add_to_skip) >= total ? "" :
@@ -294,8 +360,42 @@ export default function BuyerOrders() {
 
           }}>Load more...</Button>
         }
-      </div>
+      </div >
+      <Modal title="Rate the Seller"
+        open={isModalOpen}
+        onOk={onFinish}
+        onCancel={handleCancel}>
+        <Form
+          name="basic"
+          disabled={user?.id === undefined}
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+          <div className='mb-5 mt-3'>
+            <span>
+              <Rate tooltips={desc} onChange={setStarValue} value={star_value} />
+              {star_value ? <span className="ant-rate-text">{desc[star_value - 1]}</span> : ''}
+            </span>
+          </div>
 
-    </div>
+
+          <div>Add Your Comments:</div>
+          <Form.Item
+            // name="sellerComments"
+            initialValue={selected_order.sellerComments}
+            rules={[{ required: true, message: 'Message is require' }]}
+          >
+            <TextArea showCount maxLength={250} rows={4}
+              value={star_comment}
+              onChange={(e) => {
+                // setMessageText(e.target.value)
+                setStarComment(e.target.value)
+              }} />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div >
   )
 }

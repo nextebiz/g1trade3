@@ -71,6 +71,7 @@ type Product = {
   priceUnit: string;
   receiveOffers: boolean;
   views: number;
+  rating: ProductRating[];
   Category: {
     enabled: boolean;
     id: string;
@@ -142,4 +143,11 @@ type ImageProduct = {
   url: string;
   user_id: string;
   public_id: string;
+};
+type ProductRating = {
+  id: string;
+  message: string;
+  productId: string;
+  stars: number;
+  userId: string;
 };

@@ -39,7 +39,7 @@ export default function Contact() {
         const fetch_send_message = await fetch("/api/public/contact", { 
             method: "POST", 
             body: form_data,
-            next: { revalidate: 60 } 
+            next: { revalidate: 300 } 
         })
         const response_message = await fetch_send_message.json();
         console.log(response_message)

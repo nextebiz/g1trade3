@@ -16,6 +16,7 @@ export default function SellerOrders() {
 
   const [user, setUser] = useState<User>({} as User)
   const [orders, setOrders] = useState<Order[]>([])
+  const [orders_loaded, setOrdersLoaded] = useState(false)
   const [page_loaded, setPageLoaded] = useState(false)
   const [order_action, setOrderAction] = useState<string>("PENDING")
   const [total, setTotal] = useState(0)
@@ -81,7 +82,7 @@ export default function SellerOrders() {
     const fetch_order_update = await fetch("/api/seller/orders/update", {
       method: "POST",
       body: form_data,
-      next: { revalidate: 60 }
+      next: { revalidate: 300 }
     })
     const response_update = await fetch_order_update.json()
     setCounter(counter => counter + 1)
@@ -104,6 +105,8 @@ export default function SellerOrders() {
   const getOrders = async () => {
     if (user?.id !== undefined) {
 
+      setOrdersLoaded(false)
+
       const form_data = new FormData()
       const user_id = user?.id
       form_data.set("user_id", user_id)
@@ -116,7 +119,7 @@ export default function SellerOrders() {
       const get_orders = await fetch("/api/seller/orders/find_orders", {
         method: "POST",
         body: form_data,
-        next: { revalidate: 60 }
+        next: { revalidate: 300 }
       })
       const response_orders = await get_orders.json()
       setOrders(response_orders.data.orders)
@@ -124,6 +127,8 @@ export default function SellerOrders() {
       //   return [...orders, response_orders.data.orders]
       // })
       setTotal(response_orders.data.total)
+      setOrdersLoaded(true)
+
       setPageLoaded(true)
       setTotals(totals => {
         return {
@@ -168,7 +173,37 @@ export default function SellerOrders() {
         <section>
           {page_loaded ?
             <div>
-              <div className='flex'>
+
+              <div className='flex items-center flex-wrap'>
+                <Link onClick={() => {
+                  setOrderAction("PENDING")
+                }} href={'#'}>
+                  <div className='text-blue-500'>Pending: {totals.PENDING}</div>
+                </Link>
+                <span className='px-1 md:px-3 text-sm text-slate-300'>|</span>
+                <Link onClick={() => {
+                  setOrderAction("ACCEPTED")
+                }} href={'#'}>
+                  <div className='text-blue-500'>Accepted: {totals.ACCEPTED}</div>
+                </Link>
+                <span className='px-1 md:px-3 text-sm text-slate-300'>|</span>
+                <Link onClick={() => {
+                  setOrderAction("DELIVERED")
+                }} href={'#'}>
+                  <div className='text-blue-500'>Delivered: {totals.DELIVERED}</div>
+                </Link>
+                <span className='px-1 md:px-3 text-sm text-slate-300'>|</span>
+                <Link onClick={() => {
+                  setOrderAction("CANCELLED")
+                }} href={'#'}>
+                  <div className='text-blue-500'>Cancelled: {totals.CANCELLED}</div>
+                </Link>
+              </div>
+              <div className='py-5'>
+                <hr />
+              </div>
+
+              {/* <div className='flex'>
                 <div className='mr-3 mt-1'>Search Orders:</div>
                 <div>
                   <Form.Item
@@ -195,74 +230,76 @@ export default function SellerOrders() {
                     </Select>
                   </Form.Item>
                 </div>
-              </div>
+              </div> */}
 
-              {orders.length > 0 ?
+              {orders_loaded ?
                 <div>
-                  <div className='mb-5 text-xl'>
-                    {`${total} ${order_action === "" ? "Pending" : capitalizeWord(order_action.toLowerCase())} Orders`}
-                  </div>
-                  {orders.map(order => {
-                    return <div key={order.id}>
-                      <Card
-                        style={{ marginTop: 0 }}
-                        type="inner"
-                        title={`Required Quantity: ${order.weight} ${order.weightUnit.toLowerCase()}`}
-                      // extra={<a href="#">More</a>}
-                      >
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>Order Date:</div>
-                          <div className='ml-2'>
-                            {dayjs(Date.parse(order.createdAt.toString())).format("DD MMM YYYY")}
-                          </div>
-                        </div>
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>Product Post:</div>
-                          <div className='ml-2'>
-                            <Link target='_blank' href={`/product/${order.product.id}`}> {order.product.title}</Link>
-                          </div>
-                        </div>
-
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>{"Buyer's Name:"}</div>
-                          <div className='ml-2'>
-                            {order.user.name}
-                          </div>
-                        </div>
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>{"Buyer's Phone:"}</div>
-                          <span className='ml-2'><PhoneOutlined /></span>
-
-                          <a href={`tel:${order.user.phone1}`}>
-                            <div className='ml-2'>
-                              {order.user.phone1}
+                  {orders.length > 0 ?
+                    <div>
+                      <div className='mb-5 text-xl'>
+                        {`${total} ${order_action === "" ? "Pending" : capitalizeWord(order_action.toLowerCase())} Orders`}
+                      </div>
+                      {orders.map(order => {
+                        return <div key={order.id}>
+                          <Card
+                            style={{ marginTop: 0 }}
+                            type="inner"
+                            title={`Required Quantity: ${order.weight} ${order.weightUnit.toLowerCase()}`}
+                          // extra={<a href="#">More</a>}
+                          >
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>Order Date:</div>
+                              <div className='ml-2'>
+                                {dayjs(Date.parse(order.createdAt.toString())).format("DD MMM YYYY")}
+                              </div>
                             </div>
-                          </a>
-                        </div>
-                        <div className='flex items-center '>
-
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>{"Buyer's WhatsApp:"}</div>
-                          <span className='ml-2'><WhatsAppOutlined /></span>
-                          <Link target='_blank' href={`//api.whatsapp.com/send?phone=${order.user.phone2}&text=${'hi there'}`}>
-                            <div className='ml-2'>
-                              {order.user.phone2}
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>Product Post:</div>
+                              <div className='ml-2'>
+                                <Link target='_blank' href={`/product/${order.product.id}`}> {order.product.title}</Link>
+                              </div>
                             </div>
-                          </Link>
-                        </div>
 
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>Note from Buyer:</div>
-                          <div className='ml-2'>
-                            {order.note}
-                          </div>
-                        </div>
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>Status:</div>
-                          <div className='ml-2 order-status'>
-                            {order.orderAction}
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>{"Buyer's Name:"}</div>
+                              <div className='ml-2'>
+                                {order.user.name}
+                              </div>
+                            </div>
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>{"Buyer's Phone:"}</div>
+                              <span className='ml-2'><PhoneOutlined /></span>
+
+                              <a href={`tel:${order.user.phone1}`}>
+                                <div className='ml-2'>
+                                  {order.user.phone1}
+                                </div>
+                              </a>
+                            </div>
+                            <div className='flex items-center '>
+
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>{"Buyer's WhatsApp:"}</div>
+                              <span className='ml-2'><WhatsAppOutlined /></span>
+                              <Link target='_blank' href={`//api.whatsapp.com/send?phone=${order.user.phone2}&text=${'hi there'}`}>
+                                <div className='ml-2'>
+                                  {order.user.phone2}
+                                </div>
+                              </Link>
+                            </div>
+
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>Note from Buyer:</div>
+                              <div className='ml-2'>
+                                {order.note}
+                              </div>
+                            </div>
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>Status:</div>
+                              <div className='ml-2 order-status'>
+                                {order.orderAction}
 
 
-                            {/* <Form.Item id='order_select' className='w-32'
+                                {/* <Form.Item id='order_select' className='w-32'
                               >
                                 <Select
                                   onChange={(e) => {
@@ -274,39 +311,47 @@ export default function SellerOrders() {
                                   })}
                                 </Select>
                               </Form.Item> */}
-                          </div>
-                        </div>
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>Sellers Comment:</div>
-                          <div className='ml-2'>
-                            {order.sellerComments}
-                          </div>
-                        </div>
-                        <div className='flex items-center '>
-                          <div className='bg-slate-200 p-1 w-40 mb-1'>Update:</div>
-                          <div className='ml-2'>
-                            <Button type="primary" onClick={
-                              () => {
-                                console.log(order)
-                                setSelectedOrder(order)
-                                showModal()
-                              }
-                            }>
-                              Update Status
-                            </Button>
-                          </div>
-                        </div>
+                              </div>
+                            </div>
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>Sellers Comment:</div>
+                              <div className='ml-2'>
+                                {order.sellerComments}
+                              </div>
+                            </div>
+                            <div className='flex items-center '>
+                              <div className='bg-slate-200 p-1 w-40 mb-1'>Update:</div>
+                              <div className='ml-2'>
+                                <Button type="primary" onClick={
+                                  () => {
+                                    console.log(order)
+                                    setSelectedOrder(order)
+                                    showModal()
+                                  }
+                                }>
+                                  Update Status
+                                </Button>
+                              </div>
+                            </div>
 
-                      </Card>
+                          </Card>
+
+                        </div>
+                      })}
+
 
                     </div>
-                  })}
-
-
+                    : <div>
+                      No {order_action.toLowerCase()} ordres found
+                    </div>
+                  }
                 </div>
-                : <div>
-                  No {order_action.toLowerCase()} ordres found
+                :
+
+                <div>
+                  <Spin /><span className='text-sm ml-2'>Loading...</span>
                 </div>
+
               }
             </div>
             :

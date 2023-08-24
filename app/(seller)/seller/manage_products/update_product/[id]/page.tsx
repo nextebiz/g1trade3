@@ -68,7 +68,7 @@ export default function UpdateProduct() {
 
         const update_product = await fetch("/api/seller/products/update", {
             method: "post", body: formData,
-            next: { revalidate: 60 }
+            next: { revalidate: 300 }
         })
         const result = await update_product.json()
         if (result.status == 200) {
@@ -107,7 +107,7 @@ export default function UpdateProduct() {
                 const fetch_user = await fetch("/api/myadmin/users/find_user", {
                     method: "POST",
                     body: form_data,
-                    next: { revalidate: 60 }
+                    next: { revalidate: 300 }
 
                 })
                 const user_response = await fetch_user.json();
@@ -121,7 +121,7 @@ export default function UpdateProduct() {
                     const fetch_product = await fetch("/api/seller/products/find_product", {
                         method: "POST",
                         body: form_data_product,
-                        next: { revalidate: 60 }
+                        next: { revalidate: 300 }
 
                     })
                     const response_fetch_product = await fetch_product.json();
@@ -144,7 +144,7 @@ export default function UpdateProduct() {
 
                         const fetch_provinces = await fetch("/api/public/provinces", {
                             method: "POST",
-                            next: { revalidate: 60 }
+                            next: { revalidate: 300 }
                         });
                         const response_provinces = await fetch_provinces.json()
                         const my_provinces: Province[] = response_provinces.data as Province[]

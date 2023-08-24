@@ -22,7 +22,8 @@ export default function SellerDashboard() {
             form_data.set("user_id", user_id)
             const get_seller_info = await fetch("/api/seller/dashboard/basic_info", {
                 method: "POST",
-                body: form_data
+                body: form_data,
+                next: { revalidate: 300 } 
             })
             const response_seller_info = await get_seller_info.json()
             if (response_seller_info) {

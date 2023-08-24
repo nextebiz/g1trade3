@@ -42,7 +42,7 @@ export default function SignIn() {
                 const fetch_user = await fetch("/api/myadmin/users/find_user", {
                     method: "POST",
                     body: form_data,
-                    next: { revalidate: 60 }
+                    next: { revalidate: 300 }
 
                 })
                 const user_response = await fetch_user.json();

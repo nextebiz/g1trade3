@@ -100,7 +100,7 @@ export default function ProductDisplay() {
       const fetch_save = await fetch("/api/public/products/product/like", {
         method: "POST",
         body: form_data,
-        next: { revalidate: 60 }
+        next: { revalidate: 300 }
       })
 
       const response_save = await fetch_save.json();
@@ -133,7 +133,7 @@ export default function ProductDisplay() {
     const fetch_save = await fetch("/api/buyer/orders/place_order", {
       method: "POST",
       body: form_data,
-      next: { revalidate: 60 }
+      next: { revalidate: 300 }
     })
     const response_save = await fetch_save.json();
 
@@ -157,7 +157,7 @@ export default function ProductDisplay() {
     const fetch_orders = await fetch("/api/buyer/orders/find_orders_by_product_id", {
       method: "POST",
       body: form_data,
-      next: { revalidate: 60 }
+      next: { revalidate: 300 }
 
     })
     const response_orders = await fetch_orders.json();
@@ -185,7 +185,7 @@ export default function ProductDisplay() {
         {
           method: "POST",
           body: form_data,
-          next: { revalidate: 60 }
+          next: { revalidate: 300 }
         });
       const response_product = await fetch_product.json()
       if (response_product.like === "yes") {

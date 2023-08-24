@@ -53,7 +53,7 @@ export default function SellerProfile() {
     const fetch_save = await fetch("/api/buyer/verify_info", {
       method: "POST",
       body: form_data,
-      next: { revalidate: 60 } 
+      next: { revalidate: 300 } 
 
     })
     const response_save = await fetch_save.json();
@@ -90,7 +90,7 @@ export default function SellerProfile() {
         const fetch_profile = await fetch("/api/seller/profile", { 
           method: "POST", 
           body: form_data,
-          next: { revalidate: 60 } 
+          next: { revalidate: 300 } 
         })
         const response_profile = await fetch_profile.json();
 

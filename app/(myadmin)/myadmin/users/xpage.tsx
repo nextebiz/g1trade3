@@ -35,7 +35,7 @@ export default function Admin_Usersx() {
         const users_fetch = await fetch("/api/myadmin/users", {
             method: "post",
             body: data,
-            next: { revalidate: 60 } 
+            next: { revalidate: 300 } 
         })
         const users_data = await users_fetch.json()
         setUsers(users_data.data.users)

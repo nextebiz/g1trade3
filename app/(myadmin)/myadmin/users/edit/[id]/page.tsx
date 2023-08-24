@@ -40,7 +40,7 @@ export default function EditPage() {
         const find_user = await fetch("/api/myadmin/users/find_user/update", {
             method: "POST",
             body: form_data,
-            next: { revalidate: 60 }
+            next: { revalidate: 300 }
         })
         const result = await find_user.json();
         if (result.status === 200) {
@@ -66,7 +66,7 @@ export default function EditPage() {
                 const find_user = await fetch("/api/myadmin/users/find_user", {
                     method: "post",
                     body: form_data,
-                    next: { revalidate: 60 }
+                    next: { revalidate: 300 }
                 })
                 const user_data = await find_user.json();
                 if (user_data.status === 200) {

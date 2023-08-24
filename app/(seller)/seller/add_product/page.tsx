@@ -61,7 +61,7 @@ export default function UploadNewProduct() {
     const create_product = await fetch("/api/seller/products/create", {
       method: "post",
       body: formData,
-      next: { revalidate: 60 }
+      next: { revalidate: 300 }
     })
     const result = await create_product.json()
 
@@ -121,7 +121,9 @@ export default function UploadNewProduct() {
       form_data.set("user_id", user_id)
       const get_seller_info = await fetch("/api/seller/dashboard/basic_info", {
         method: "POST",
-        body: form_data
+        body: form_data,
+        next: { revalidate: 300 } 
+        
       })
       const response_seller_info = await get_seller_info.json()
       if (response_seller_info) {
@@ -140,7 +142,7 @@ export default function UploadNewProduct() {
         const fetch_user = await fetch("/api/myadmin/users/find_user", {
           method: "POST",
           body: form_data,
-          next: { revalidate: 60 }
+          next: { revalidate: 300 }
 
         })
         const user_response = await fetch_user.json();
@@ -161,7 +163,7 @@ export default function UploadNewProduct() {
     const get_provinces = async () => {
       const fetch_provinces = await fetch("/api/public/provinces", {
         method: "POST",
-        next: { revalidate: 60 }
+        next: { revalidate: 300 }
       });
       const my_provinces = await fetch_provinces.json()
       setProvinces(my_provinces.data)

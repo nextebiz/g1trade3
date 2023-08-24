@@ -22,7 +22,7 @@ export default function PreviewPicture() {
                 const fetch_image = await fetch("/api/public/products/product/image", {
                     method: "POST",
                     body: form_data,
-                    next: { revalidate: 60 }
+                    next: { revalidate: 300 }
 
                 })
                 const response_image = await fetch_image.json();

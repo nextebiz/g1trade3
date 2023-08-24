@@ -105,7 +105,7 @@ export default function Home() {
     const fetch_products = await fetch("/api/public/products", {
       method: "post",
       body: form_data,
-      next: { revalidate: 60 }
+      next: { revalidate: 300 }
     })
     const response_products = await fetch_products.json()
     setProducts(response_products.data)

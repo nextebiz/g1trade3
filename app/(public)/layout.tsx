@@ -9,8 +9,34 @@ import { Metadata } from 'next'
 
 
 export const metadata: Metadata = {
-    title: 'G1 Garlic Mandi | G1 Garlic Trading Online | Buy & Sell G1 Garlic',
+    title: 'G1 Garlic Mandi | G1 Garlic Trading Online | Sell G1 Garlic',
     description: 'Buy and Sell G1 Garlic online',
+    viewport: "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
+    icons: [
+        {
+            rel: 'icon',
+            type: 'image/png',
+            sizes: '32x32',
+            url: '/favicon/favicon-32x32.png',
+        },
+        {
+            rel: 'icon',
+            type: 'image/png',
+            sizes: '32x32',
+            url: '/favicon/favicon-32x32.png',
+        },
+        {
+            rel: 'icon',
+            type: 'image/png',
+            sizes: '16x16',
+            url: '/favicon/favicon-16x16.png',
+        },
+        {
+            rel: 'apple-touch-icon',
+            sizes: '180x180',
+            url: '/favicon/apple-touch-icon.png',
+        },
+    ]
 }
 
 interface Props {
@@ -22,7 +48,7 @@ export default async function PublicLayout({ children }: Props) {
         <>
             <NextAuthProvider>
                 <PublicHeader session={session} />
-                    {children}
+                {children}
                 <PublicFooter />
             </NextAuthProvider>
         </>

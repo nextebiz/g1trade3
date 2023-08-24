@@ -17,7 +17,7 @@ interface Props {
 }
 export default function PublicHeader({ session }: Props) {
 
-    console.log(process.env.NEXT_PUBLIC_SERVER_PATH)
+   
     const query_string = useSearchParams()
     const [open, setOpen] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
@@ -350,14 +350,14 @@ export default function PublicHeader({ session }: Props) {
                     <nav className="flex justify-start items-center bg-gray-900 text-white w-screen">
                         <div className="px-5 xl:px-12 py-6 flex w-full items-center justify-between">
 
-                            <a href='https://g1trade.com' className="text-3xl font-bold font-heading w-32 sm:w-32 md:w-40">
+                            {/* <a href='https://g1trade.com' className="text-3xl font-bold font-heading w-32 sm:w-32 md:w-40">
                                 <img src='/images/logo/g1trade-logo-g1-garlic-sale-pakistan.svg?v-1' style={{ width: "150px" }} alt="" />
-                            </a>
-                            {/* <Link className="text-3xl font-bold font-heading w-32 sm:w-32 md:w-40" href={pathName === "/" ? "/refresh" : "/"}>
+                            </a> */}
+                            <Link className="text-3xl font-bold font-heading w-32 sm:w-32 md:w-40" href={pathName === "/" ? "/refresh" : "/"}>
                                 <img src='/images/logo/g1trade-logo-g1-garlic-sale-pakistan.svg?v-1' style={{ width: "150px" }} alt="" />
-                            </Link> */}
+                            </Link>
                             <ul className="text-sm lg:text-lg hidden md:flex px-4 mx-auto font-semibold font-heading space-x-5 lg:space-x-12">
-                                <li><Link className="hover:text-gray-200" href="https://g1trade.com">G1 Garlic For Sale</Link></li>
+                                <li><Link className="hover:text-gray-200" href={pathName === "/" ? "/refresh" : "/"}>G1 Garlic For Sale</Link></li>
                                 <li><Link className="hover:text-gray-200" href={`/cities`}>Browse Cities</Link></li>
                                 <li><Link className="hover:text-gray-200" href={
                                     session?.user.role === "SELLER" ?

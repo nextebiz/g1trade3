@@ -73,7 +73,7 @@ export default function Profile() {
             const fetch_user = await fetch("/api/myadmin/users/find_user", {
                 method: "POST",
                 body: form_data,
-                next: { revalidate: 60 }
+                next: { revalidate: 300 }
 
             });
             const user_response = await fetch_user.json();
@@ -91,7 +91,7 @@ export default function Profile() {
             const fetch_profile = await fetch("/api/seller/profile", {
                 method: "POST",
                 body: form_data,
-                next: { revalidate: 60 }
+                next: { revalidate: 300 }
             })
             const response_profile = await fetch_profile.json();
 
@@ -123,7 +123,7 @@ export default function Profile() {
             const fetch_products = await fetch("/api/seller/products/find_products", { 
                 method: "POST", 
                 body: form_data,
-                next: { revalidate: 60 } 
+                next: { revalidate: 300 } 
             })
             const response_products = await fetch_products.json();
             setProducts(response_products.data.products)

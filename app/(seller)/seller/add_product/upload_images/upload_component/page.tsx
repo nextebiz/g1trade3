@@ -67,7 +67,7 @@ export default function UploadComponent({ params: { imageProduct, save_default_i
             {
                 method: "POST",
                 body: form_data,
-                next: { revalidate: 60 }
+                next: { revalidate: 300 }
             });
         const delete_response = await fetch_delete.json();
         if (delete_response.status === 200) {
@@ -209,7 +209,7 @@ export default function UploadComponent({ params: { imageProduct, save_default_i
                 const fetch_upload = await fetch("/api/seller/products/upload_image", {
                     method: "POST",
                     body: form_data,
-                    next: { revalidate: 60 }
+                    next: { revalidate: 300 }
 
                 })
                 const fetch_result = await fetch_upload.json();

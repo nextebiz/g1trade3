@@ -19,7 +19,7 @@ export default function BrowseByCities() {
         const getData = async () => {
             const fetch_province = await fetch("/api/public/provinces", { 
                 method:"POST",
-                next: { revalidate: 60 } 
+                next: { revalidate: 300 } 
             });
             const response_province = await fetch_province.json();
             setProvinces(response_province.data)

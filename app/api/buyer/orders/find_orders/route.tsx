@@ -26,7 +26,12 @@ export async function POST(req: Request, res: Response) {
             include: {
                 product: {
                     include: {
-                        User: true
+                        User: true,
+                        rating: {
+                            where: {
+                                userId: user_id
+                            }
+                        }
                     }
                 },
                 user: true,
