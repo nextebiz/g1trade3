@@ -12,6 +12,7 @@ import { authOptions } from './api/auth/[...nextauth]/route'
 
 export const metadata: Metadata = {
   title: 'G1 Garlic Mandi | G1 Garlic Trading Online | Sell G1 Garlic',
+
   description: 'Buy and Sell G1 Garlic online',
   viewport: "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
   icons: [
@@ -60,6 +61,8 @@ export default async function RootLayout({
  
   return (
     <html lang="en">
+      <meta name="facebook-domain-verification" content="eu3tbaj35umu2t2naxgg5zozniqcl9" />
+
       <body className={inter.className}>
         <RootStyleRegistry>
           <ThemeProvider>
