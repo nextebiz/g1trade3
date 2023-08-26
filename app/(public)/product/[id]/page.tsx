@@ -10,6 +10,8 @@ import TextArea from 'antd/es/input/TextArea';
 import { Order } from '@prisma/client';
 import datjs from 'dayjs';
 import ProductRatings from '../rating/page';
+import { FacebookIcon, FacebookShareButton, WhatsappIcon, WhatsappShareButton } from 'react-share';
+
 
 type FieldType = {
   product_title?: string;
@@ -322,6 +324,24 @@ export default function ProductDisplay() {
                   <div className='flex items-center align-middle'>
                     <p className=''>Stock Available for Sale:</p>
                     <span className='ml-0 md:ml-2 '>{product.weight}<span className='ml-1 capitalize'>{product.weightUnit.toLowerCase()}</span></span>
+                  </div>
+                  <div>
+                    <div className='mt-3 flex items-center'>
+                      <div className='mr-5 text-xs'>Share:</div>
+                      <div className='mr-5'>
+                        <FacebookShareButton url={process.env.NEXT_PUBLIC_SERVER_PATH + pathName}
+                        >
+                          <FacebookIcon round size="32px" />
+                        </FacebookShareButton>
+                      </div>
+                      <div className='mr-5'>
+                        <WhatsappShareButton url={process.env.NEXT_PUBLIC_SERVER_PATH + pathName}
+                        >
+                          <WhatsappIcon round size="32px" />
+                        </WhatsappShareButton>
+                      </div>
+                    </div>
+
                   </div>
 
                   {product?.receiveOffers ?
