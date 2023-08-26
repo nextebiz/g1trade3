@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request, res: Response) {
     const data = await prisma.category.findMany({
         where: {
-            enabled: true
+            enabled: true,
+            
         }
     })
 

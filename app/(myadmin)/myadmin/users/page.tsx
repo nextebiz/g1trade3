@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { InfoCircleOutlined, FormOutlined } from "@ant-design/icons"
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Button, Spin } from 'antd';
-import TopMessage from '@/app/components/alerts/top_message/page';
-
+import { Button, Spin, Select, Space } from 'antd';
+import dayjs from 'dayjs';
 
 
 export default function Admin_Users() {
@@ -15,116 +14,51 @@ export default function Admin_Users() {
     const router = useRouter();
     const [users, setUsers] = useState<AdminUser[]>([])
     const [total, setTotal] = useState(0)
-    const [take, setTake] = useState(0)
+    const [take, setTake] = useState(20)
     const [skip, setSkip] = useState(0)
+    const [user_loaded, setUserLoaded] = useState(false)
     const [page_loaded, setPageLoaded] = useState(false)
-    const [counter, setCounter] = useState(0)
-    const [updated_user, setUpdatedUser] = useState(false)
+    const [search_filter, setSearchFilter] = useState("ALL")
 
-
-
-    function pagination_calc() {
-        let result = total - (total - (take)) + skip
-        if (result > total) { return total }
-        return result
-    }
-
-    function getNextLink() {
-        let next_skip = skip + take;
-        if (next_skip > total) {
-            next_skip = total
-        }
-        let next_link = `/myadmin/users?take=${take}&skip=${next_skip}`
-        return next_link
-    }
-    function getPreviousLink() {
-        let next_skip = skip - take;
-        if (next_skip > total) {
-            next_skip = total
-        }
-        let next_link = `/myadmin/users?take=${take}&skip=${next_skip}`
-        return next_link
-    }
 
     const getAsyncData = async () => {
+        setUserLoaded(false)
 
-        let take_param = searchParams.get('take') as string
-        let skip_param = searchParams.get('skip') as string
+        const form_data = new FormData();
+        form_data.set("take", take.toString())
+        form_data.set("skip", skip.toString())
+        form_data.set("search_filter", search_filter)
 
-        take_param = take_param == null ? "3" : take_param;
-        skip_param = skip_param == null ? "0" : skip_param;
-
-        if (page_loaded) {
-            take_param = take.toString();
-            skip_param = skip.toString();
-        }
-
-        const data = new FormData();
-        data.set("take", take_param)
-        data.set("skip", skip_param)
-
-        const users_fetch = await fetch("/api/myadmin/users", {
+        const fetch_users = await fetch("/api/myadmin/users", {
             method: "post",
-            body: data,
-            next: { revalidate: 300 } 
+            body: form_data,
+            next: { revalidate: 300 }
         })
-        const users_data = await users_fetch.json()
-        setUsers(users_data.data.users)
-        setTotal(users_data.data.total)
-        setTake(users_data.data.take)
-        setSkip(users_data.data.skip)
-    }
+        const response_users = await fetch_users.json()
+        setUsers(response_users.data.users)
+        setTotal(response_users.data.stats.total)
+        setUserLoaded(true)
+        setPageLoaded(true)
 
-    function goToUrl(take_number: number, skip_number: number) {
-        // router.push(`/myadmin/users?take=${page_number}&skip=0`)
-        setTake(take_number)
-        setSkip(skip_number)
-        setCounter(counter => { return counter + 1 })
     }
 
     useEffect(() => {
-        let msg = searchParams.get('msg') as string
-        if (msg === "updated_user") {
-            setUpdatedUser(true)
-        }
-
-
-        setPageLoaded(false)
-        const waitfunction = async () => {
-            await getAsyncData();
-            setPageLoaded(true)
-
-        }
-        waitfunction();
-    }, [counter])
+        getAsyncData();
+    }, [skip, search_filter])
 
     return (
         <div className='' style={{ width: "100%" }}>
             <div style={{ height: "60px" }} className='bg-slate-700 flex items-center'>
 
                 <div style={{ paddingLeft: "45px" }}>
-                    All Products
+                    Users
                 </div>
             </div>
             <div className='text-black  p-5 '>
                 <section>
-                    {updated_user ?
+                    {/* {updated_user ?
                         <TopMessage params={{ msg: "User Updates Successfully!", msg_type: "success" }} />
-                        : ""}
-                    <div>
-
-                        <Link onClick={() => {
-                            goToUrl(2, 0)
-                        }}
-                            href="/myadmin/users?take=2&skip=0">Go to 2</Link>
-                        <hr />
-                        <Link onClick={() => {
-                            goToUrl(4, 0)
-                        }}
-                            href="/myadmin/users?take=4&skip=0">Go to 4</Link>
-
-                    </div>
-
+                        : ""} */}
                     <div className='text-black  p-5 '>
                         {page_loaded ?
                             <section>
@@ -140,10 +74,36 @@ export default function Admin_Users() {
                                     </div>
                                     :
                                     <div>
+                                        <div className='mb-3'>
+                                            Filter:  <Space wrap>
+                                                <Select
+                                                    defaultValue="ALL"
+                                                    style={{ width: 120 }}
+                                                    onChange={(e) => {
+                                                        setSearchFilter(e)
+                                                    }}
+                                                    options={[
+                                                        { value: 'ALL', label: 'Display All' },
+                                                        { value: 'ADMIN', label: 'ADMIN' },
+                                                        { value: 'BUYER', label: 'BUYER' },
+                                                        { value: 'SELLER', label: 'SELLER' },
+                                                    ]}
+                                                />
+                                            </Space>
 
-                                        <h1>
-                                            Displaying total {users.length} users
-                                        </h1>
+                                        </div>
+
+                                        {user_loaded ?
+                                            <div className='mb-3'>
+                                                Displaying total {users.length} users
+                                            </div>
+                                            :
+                                            <div className='flex'>
+                                                <div><Spin /></div>
+                                                <div className='ml-2'>Loading...</div>
+                                            </div>
+                                        }
+
 
                                         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3  gap-2">
                                             {users.map(user => {
@@ -154,25 +114,87 @@ export default function Admin_Users() {
                                                                 <img src={user.image} className='object-contain rounded-full border' />
                                                             </div>
                                                             <div className='w-full p-1'>
-                                                                <h2 className='text-md'>{user.name}</h2>
-                                                                <p className='text-xs'><span>ID: </span>{user.id}</p>
-                                                                <p className='text-sm'>{user.email}</p>
-                                                                <p className='text-sm'>{user.phone1}</p>
-                                                                <Button onClick={() => {
-                                                                    router.push(`/myadmin/users/edit/${user.id}`)
-                                                                }}>
-                                                                    <div className='text-white'>
-                                                                        <span className='mr-2'>Edit</span> <FormOutlined />
+                                                                <div className='flex mb-3'>
+
+                                                                    <div className=' mr-2'>{user.name}</div>
+
+                                                                    <div className={`
+                                                                    ${user.role === "ADMIN" ? "bg-red-500" : ""}
+                                                                    ${user.role === "SELLER" ? "bg-green-500" : ""}
+                                                                    ${user.role === "BUYER" ? "bg-slate-500" : ""}
+                                                                     px-3 text-white`}>
+                                                                        {user.role}
                                                                     </div>
-                                                                </Button>
+                                                                </div>
+                                                                <p className='text-xs'>
+                                                                    <span className='font-bold'>ID: </span>
+                                                                    {user.id}</p>
+                                                                <p className='text-sm'>
+                                                                    <span className='font-bold'>Email: </span>
+                                                                    {user.email}</p>
+                                                                <p className='text-sm'>
+                                                                    <span className='font-bold'>Phone: </span>
+                                                                    {user.phone1}
+                                                                </p>
+                                                                <p className='text-sm'>
+                                                                    <span className='font-bold'>WhatsApp: </span>
+                                                                    {user.phone2}
+                                                                </p>
+                                                                <p className='text-sm'>
+                                                                    <span className='font-bold'>Allowed Ads: </span>
+                                                                    {user.numberOfAllowedAds}
+                                                                </p>
+
+                                                                <p className='text-sm'>
+                                                                    <span className='font-bold'>Allowed Cities: </span>
+                                                                    {user.numberOfAllowedCities}
+                                                                </p>
+                                                                {user?.role === "SELLER" ?
+                                                                    <p className='text-sm'>
+                                                                        <span className={`font-bold`}>Expiry Date:</span>
+                                                                        <span>
+                                                                            {
+                                                                                user.expiryDate ?
+                                                                                    dayjs(user.expiryDate?.toString()).diff(dayjs(), "days") > -1 ?
+                                                                                        <span>
+                                                                                            <span>{dayjs(user.expiryDate?.toString()).format("DD MMM YYYY")}</span>
+                                                                                            <span className='bg-green-500 text-white p-1 ml-2'>Active {dayjs(user.expiryDate?.toString()).diff(dayjs(), "days")} days remaining</span>
+                                                                                        </span>
+                                                                                        :
+                                                                                        <span>
+                                                                                            <span>{dayjs(user.expiryDate?.toString()).format("DD MMM YYYY")}</span>
+                                                                                            <span className='bg-red-500 text-white p-1 ml-2'>Expired {dayjs(user.expiryDate?.toString()).diff(dayjs(), "days")} days ago</span>
+                                                                                        </span>
+                                                                                    :
+                                                                                    "-"
+                                                                            }
+                                                                        </span>
+                                                                    </p>
+                                                                    : ""}
+                                                                <div className='absolute top-0 right-0 mr-2 mt-2'>
+                                                                    <Button onClick={() => {
+                                                                        router.push(`/myadmin/users/edit/${user.id}`)
+                                                                    }}>
+                                                                        <div className='text-white'>
+                                                                            <span className=''>Edit</span>
+                                                                        </div>
+                                                                    </Button>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div className='container m-auto grid grid-cols-2 text-center mt-2'>
+
+                                                        <div>
+
+                                                        </div>
+
+                                                        {/* <div className='container m-auto grid grid-cols-2 text-center mt-2'>
                                                             <p className={`text-sm  p-2 border-r border-r-slate-400 ${user.role === "ADMIN" ? "bg-red-300" : user.role === "SELLER" ? "bg-blue-400" : "bg-slate-200"}`}>
-                                                                {user.role}
+                                                                {user.role}x
                                                             </p>
                                                             <p className='text-sm p-2 bg-slate-200'>
-                                                                {user.status}</p>
+                                                                AD
+                                                            </p>
+
                                                         </div>
                                                         <div style={{ height: "80px" }}>
                                                             <div className='border-t border-t-slate-300 flex items-center justify-around text-center absolute bottom-0 bg-slate-100 w-full'
@@ -183,11 +205,11 @@ export default function Admin_Users() {
                                                                     <div className=''>Products</div>
                                                                 </div>
                                                                 <div>
-                                                                    <div className='text-2xl'>{user._count.accounts}</div>
-                                                                    <div className=''>Accounts</div>
+                                                                    <div className='text-2xl'>{user.numberOfAllowedAds}</div>
+                                                                    <div className=''>Allowed</div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
 
                                                     </div>
                                                 )
@@ -195,29 +217,57 @@ export default function Admin_Users() {
 
                                         </div>
                                         <hr className='mt-4 mb-4' />
-                                        <div className='flex justify-center items-center'>
-                                            {pagination_calc() <= take ? "" :
-                                                <Link className='ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800' onClick={() => {
+                                        <div className='flex justify-center mb-3' >
+                                            {user_loaded ?
+                                                <h1>
 
-                                                    goToUrl((take), (skip - take))
-                                                }}
-                                                    href={getPreviousLink()}>Previous Page</Link>
+                                                    Displaying  {(take + skip) > total ? total :
+
+                                                        <span>
+                                                            {(skip + 1)} to {take + skip}
+                                                        </span>
+                                                    } of {total}
+                                                </h1>
+                                                :
+                                                <div className='flex'>
+                                                    <div><Spin /></div>
+                                                    <div className='ml-2'>Loading...</div>
+                                                </div>
                                             }
-                                            <div className='ml-3'>
-                                                Displaying {
-                                                    pagination_calc()
-                                                } of {total}
+                                        </div>
+                                        <div className='flex justify-center'>
+
+
+                                            <div className={`${skip === 0 ? "opacity-50" : ""}`}>
+                                                <Button
+                                                    disabled={skip === 0}
+                                                    onClick={(e) => {
+                                                        e.preventDefault()
+                                                        setSkip(skip => {
+                                                            return skip - take
+                                                        })
+                                                    }}
+                                                >Previous Page
+                                                </Button>
                                             </div>
-                                            {pagination_calc() == total ? "" :
-                                                <Link className='ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800' onClick={() => {
-                                                    goToUrl((take), (skip + take))
-                                                }}
-                                                    href={getNextLink()}>Next Page</Link>
-                                            }
 
+
+                                            <div className={`${(skip + take) >= total ? "opacity-50" : ""}`}>
+
+                                                <Button
+                                                    disabled={(skip + take) >= total}
+                                                    onClick={(e) => {
+                                                        e.preventDefault()
+                                                        setSkip(skip => {
+                                                            return skip + take
+                                                        })
+                                                    }}
+                                                >Next Page</Button>
+                                            </div>
 
                                         </div>
                                     </div>
+
                                 }
                             </section>
                             : <div>

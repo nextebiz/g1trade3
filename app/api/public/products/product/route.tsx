@@ -10,7 +10,12 @@ export async function POST(req: Request, res: Response) {
 
     const product = await prisma.product.findFirst({
         where: {
-            id: product_id
+            id: product_id,
+            // User: {
+            //     expiryDate: {
+            //         gt: new Date()
+            //     }
+            // }
         },
         include: {
             _count: true,

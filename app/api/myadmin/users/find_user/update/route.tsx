@@ -6,6 +6,7 @@ export async function POST(req: Request, res: Response) {
     const get_user = posted_data.get("user")
     const user: User = JSON.parse(get_user as string)
 
+
     try {
         const update_user = await prisma.user.update({
             where: { id: user.id },
@@ -24,7 +25,8 @@ export async function POST(req: Request, res: Response) {
                 cartId: user.cartId,
                 cityLimits: user.cityLimits as any,
                 numberOfAllowedCities: user.numberOfAllowedCities,
-                expirtyDate: user.expirtyDate,
+                numberOfAllowedAds: user.numberOfAllowedAds,
+                expiryDate: user.expiryDate,
                 status: user.status as any,
                 enabled: user.enabled,
                 createdAt: user.createdAt,
@@ -32,6 +34,7 @@ export async function POST(req: Request, res: Response) {
             }
 
         })
+
     } catch (err) {
         await prisma.$disconnect()
         return NextResponse.json({

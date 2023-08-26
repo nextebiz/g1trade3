@@ -42,7 +42,7 @@ type User = {
   cityLimits: string;
   numberOfAllowedCities: number;
   numberOfAllowedAds: number;
-  expirtyDate: Date;
+  expiryDate: Date;
   createdAt: Date;
   updatedAt: Date;
 };

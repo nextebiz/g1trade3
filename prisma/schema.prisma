@@ -57,7 +57,7 @@ model User {
   cityLimits            CityLimits      @default(LIMITED)
   numberOfAllowedCities Int             @default(1)
   numberOfAllowedAds    Int             @default(2)
-  expirtyDate           DateTime?
+  expiryDate           DateTime?
   status                AccountStatus   @default(ACTIVE)
   enabled               Boolean         @default(true)
   Order                 Order[]

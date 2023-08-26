@@ -1,9 +1,12 @@
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
 
-export async function POST(req:Request, res:Response) {
+export async function POST(req: Request, res: Response) {
 
     const provinces = await prisma.province.findMany({
+        where: {
+            
+        },
         include: {
             city: {
                 where: {
@@ -19,7 +22,13 @@ export async function POST(req:Request, res:Response) {
                                 where: {
                                     Product: {
                                         enabled: true,
-                                        status: "APPROVED"
+                                        status: "APPROVED",
+                                        User: {
+                                            expiryDate: {
+                                                gt: new Date()
+                                            }
+                                        }
+                                
                                     }
                                 }
                             }
@@ -34,7 +43,12 @@ export async function POST(req:Request, res:Response) {
                         where: {
                             Product: {
                                 enabled: true,
-                                status: "APPROVED"
+                                status: "APPROVED",
+                                User: {
+                                    expiryDate: {
+                                        gt: new Date()
+                                    }
+                                }
                             }
                         }
                     }

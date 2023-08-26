@@ -21,9 +21,12 @@ export default function EditPage() {
     const post_dateFormat = 'YYYY-MM-DDTHH:mm:ssZ';
 
     const onDateChangeExpiryDate: DatePickerProps['onChange'] = (date, dateString) => {
-        setUser(usr => {
-            return { ...usr, expirtyDate: dayjs(dateString).toISOString() as any }
-        })
+
+        if (dateString !== "") {
+            setUser(usr => {
+                return { ...usr, expiryDate: dayjs(dateString).toISOString() as any }
+            })
+        }
 
     };
 
@@ -66,7 +69,8 @@ export default function EditPage() {
                 const find_user = await fetch("/api/myadmin/users/find_user", {
                     method: "post",
                     body: form_data,
-                    next: { revalidate: 300 }
+                    next: { revalidate: 1 },
+                    cache: "no-cache"
                 })
                 const user_data = await find_user.json();
                 if (user_data.status === 200) {
@@ -82,7 +86,7 @@ export default function EditPage() {
             <div style={{ height: "60px" }} className='bg-slate-700 flex items-center'>
 
                 <div style={{ paddingLeft: "45px" }}>
-                    All Products
+                    Edit User
                 </div>
             </div>
             <div className='text-black  p-5 '>
@@ -105,27 +109,7 @@ export default function EditPage() {
                                             onFinishFailed={onFinishFailed}
                                             autoComplete="off"
                                         >
-                                            <div>
-                                                name:{user?.name}<br />
-                                                email: {user?.email}<br />
-                                                password: {user?.password}<br />
-                                                role:  {user?.role}<br />
-                                                phone1: {user?.phone1}<br />
-                                                phone2:{user?.phone2}<br />
-                                                phone3: {user?.phone3}<br />
-                                                address:{user?.address}<br />
-                                                image:
-                                                <img src={`${user?.image}`} /><br />
-                                                {/* picture:{user?.picture}<br /> */}
-                                                cartId: {user?.cartId}<br />
-                                                cityLimits: {user?.cityLimits}<br />
-                                                numberOfAllowedCities: {user?.numberOfAllowedCities}<br />
-                                                expirtyDate: {user?.expirtyDate}<br />
-                                                status: {user?.status}<br />
-                                                enabled: {user?.enabled}<br />
-                                                createdAt: {dayjs(user?.createdAt).format("YYYY/MM/DD").toString()}<br />
-                                                updatedAt: {user?.updatedAt}<br />
-                                            </div>
+
                                             <div>
                                                 <button onClick={() => {
                                                     setUser(usr => {
@@ -158,19 +142,6 @@ export default function EditPage() {
                                                     })
                                                 }} />
                                             </Form.Item>
-
-                                            <Form.Item
-                                                label="Password"
-                                                name="password"
-                                                initialValue={user?.password}
-                                            // rules={[{ required: true, message: 'Please type your password!' }]}
-                                            >
-                                                <Input value={user?.password} onChange={(e) => {
-                                                    setUser((usr) => {
-                                                        return { ...usr, password: e.target.value }
-                                                    })
-                                                }} />
-                                            </Form.Item>
                                             <Form.Item
                                                 name="User Role"
                                                 label="role"
@@ -192,6 +163,78 @@ export default function EditPage() {
                                                 >
                                                 </Select>
                                             </Form.Item>
+
+                                            <Form.Item
+                                                label="Date Expiry"
+                                                name="expiryDate"
+                                                initialValue={user?.expiryDate ? dayjs(user?.expiryDate) : ''}
+
+                                            // rules={[{ required: true, message: 'Please type total cities to allow!' }]}
+                                            >
+                                                <DatePicker onChange={onDateChangeExpiryDate}
+                                                    format={dateFormat} />
+                                            </Form.Item>
+
+
+                                            <Form.Item
+                                                name="City Selection Limit"
+                                                label="cityLimits"
+                                                initialValue={user?.cityLimits}
+                                                rules={[{ required: true }]}>
+                                                <Select
+                                                    placeholder="City Selection Limit"
+                                                    onChange={(e) => {
+                                                        setUser(usr => {
+                                                            return { ...usr, cityLimits: e }
+                                                        })
+                                                    }}
+                                                    allowClear
+                                                    options={[
+                                                        { value: 'LIMITED', label: 'LIMITED' },
+                                                        { value: 'UNLIMITED', label: 'UNLIMITED' },
+
+                                                    ]}
+                                                >
+                                                </Select>
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Number of Allowed Cities"
+                                                name="numberOfAllowedCities"
+                                                initialValue={user?.numberOfAllowedCities}
+                                                rules={[{ required: true, message: 'Please type total cities to allow!' }]}
+                                            >
+                                                <Input value={user?.numberOfAllowedCities} onChange={(e) => {
+                                                    setUser((usr) => {
+                                                        return { ...usr, numberOfAllowedCities: parseInt(e.target.value) }
+                                                    })
+                                                }} />
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Number of Allowed Ads"
+                                                name="numberOfAllowedAds"
+                                                initialValue={user?.numberOfAllowedAds}
+                                                rules={[{ required: true, message: 'Please type total ads to allow!' }]}
+                                            >
+                                                <Input value={user?.numberOfAllowedAds} onChange={(e) => {
+                                                    setUser((usr) => {
+                                                        return { ...usr, numberOfAllowedAds: parseInt(e.target.value) }
+                                                    })
+                                                }} />
+                                            </Form.Item>
+
+                                            <Form.Item
+                                                label="Password"
+                                                name="password"
+                                                initialValue={user?.password}
+                                            // rules={[{ required: true, message: 'Please type your password!' }]}
+                                            >
+                                                <Input value={user?.password} onChange={(e) => {
+                                                    setUser((usr) => {
+                                                        return { ...usr, password: e.target.value }
+                                                    })
+                                                }} />
+                                            </Form.Item>
+
 
 
 
@@ -264,65 +307,7 @@ export default function EditPage() {
 
                                             </div>
                                             <hr />
-                                            <Form.Item
-                                                label="Cart ID"
-                                                name="cartId"
-                                                initialValue={user?.cartId}
-                                            // rules={[{ required: true, message: 'Please type your address!' }]}
-                                            >
-                                                <Input value={user?.cartId} onChange={(e) => {
-                                                    setUser((usr) => {
-                                                        return { ...usr, cartId: e.target.value }
-                                                    })
-                                                }} />
-                                            </Form.Item>
 
-                                            <Form.Item
-                                                name="City Selection Limit"
-                                                label="cityLimits"
-                                                initialValue={user?.cityLimits}
-                                                rules={[{ required: true }]}>
-                                                <Select
-                                                    placeholder="City Selection Limit"
-                                                    onChange={(e) => {
-                                                        setUser(usr => {
-                                                            return { ...usr, cityLimits: e }
-                                                        })
-                                                    }}
-                                                    allowClear
-                                                    options={[
-                                                        { value: 'LIMITED', label: 'LIMITED' },
-                                                        { value: 'UNLIMITED', label: 'UNLIMITED' },
-
-                                                    ]}
-                                                >
-                                                </Select>
-                                            </Form.Item>
-                                            <Form.Item
-                                                label="Number of Allowed Cities"
-                                                name="numberOfAllowedCities"
-                                                initialValue={user?.numberOfAllowedCities}
-                                                rules={[{ required: true, message: 'Please type total cities to allow!' }]}
-                                            >
-                                                <Input value={user?.numberOfAllowedCities} onChange={(e) => {
-                                                    setUser((usr) => {
-                                                        return { ...usr, numberOfAllowedCities: parseInt(e.target.value) }
-                                                    })
-                                                }} />
-                                            </Form.Item>
-
-
-                                            <Form.Item
-                                                label="Date Expiry"
-                                                name="expirtyDate"
-                                                initialValue={user?.expirtyDate ? dayjs(user?.createdAt) : ''}
-
-                                            // rules={[{ required: true, message: 'Please type total cities to allow!' }]}
-                                            >
-                                                <DatePicker onChange={onDateChangeExpiryDate}
-                                                    // defaultValue={dayjs(user?.expirtyDate)}
-                                                    format={dateFormat} />
-                                            </Form.Item>
 
                                             <Form.Item
                                                 label="Date Created"
@@ -330,7 +315,7 @@ export default function EditPage() {
                                                 initialValue={dayjs(user?.createdAt ? user?.createdAt : '')}
                                                 rules={[{ required: true, message: 'Please type total cities to allow!' }]}
                                             >
-                                                <DatePicker onChange={onDateChangeCreatedAt}
+                                                <DatePicker disabled onChange={onDateChangeCreatedAt}
                                                     // defaultValue={dayjs(user?.createdAt)}
                                                     format={dateFormat} />
                                             </Form.Item>

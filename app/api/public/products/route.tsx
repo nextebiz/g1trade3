@@ -1,6 +1,7 @@
 import prisma from "@/libs/prisma";
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
+import dayjs from "dayjs";
 
 export async function POST(req: Request, res: Response) {
 
@@ -55,6 +56,8 @@ export async function POST(req: Request, res: Response) {
         }
     }
 
+
+
     const query: Prisma.ProductFindManyArgs = {
         take: take,
         skip: skip,
@@ -62,7 +65,12 @@ export async function POST(req: Request, res: Response) {
             enabled: true,
             status: "APPROVED",
             productCity: citySearch,
-            Category: categorySearch
+            Category: categorySearch,
+            User: {
+                expiryDate:{
+                    gt: new Date()
+                }
+            }
         },
         include: {
             _count: true,
@@ -84,6 +92,8 @@ export async function POST(req: Request, res: Response) {
             createdAt: "desc"
         }
     }
+
+
 
     const [products, count] = await prisma.$transaction([
         prisma.product.findMany(query),

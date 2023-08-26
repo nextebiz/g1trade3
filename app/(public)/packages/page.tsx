@@ -97,7 +97,7 @@ export default function SellerPackages() {
                 <span className="bg-indigo-500 text-white px-3 py-1 tracking-widest text-xs absolute right-0 top-0 rounded-bl">POPULAR</span>
                 <h2 className="text-sm tracking-widest title-font mb-1 font-medium">PRO SELLER- BUY AND SELL</h2>
                 <h1 className="text-5xl text-gray-200 leading-none flex items-center pb-4 mb-4 border-b border-gray-200">
-                  <span>Rs 5,000</span>
+                  <span>Rs 2,500</span>
                   <span className="text-lg ml-1 font-normal text-gray-300">/month per ad post</span>
                 </h1>
                 <p className="flex items-center text-gray-200 mb-2">
@@ -126,7 +126,7 @@ export default function SellerPackages() {
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
-                  </span>Additional Ad Listing @ Rs 2500 per ad
+                  </span>Additional Ad Listing @ Rs 2200 per ad
                 </p>
                 <p className="flex items-center text-gray-200 mb-6">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-800 text-white rounded-full flex-shrink-0">
