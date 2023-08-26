@@ -16,6 +16,11 @@ export async function POST(req: Request, res: Response) {
             _count: true,
             Category: true,
             images: true,
+            rating: {
+                select: {
+                    stars: true
+                }
+            },
             productCity: {
                 include: {
                     City: true

@@ -68,7 +68,12 @@ export async function POST(req: Request, res: Response) {
             _count: true,
             images: true,
             Category: true,
-            User: {},
+            User: true,
+            rating: {
+                select: {
+                    stars: true
+                }
+            },
             productCity: {
                 include: {
                     City: true
@@ -95,37 +100,4 @@ export async function POST(req: Request, res: Response) {
             page: page
         }
     })
-
-    // const product_count = await prisma.product.count({
-    //     where: {
-    //         enabled: true,
-    //         status: "APPROVED"
-    //     }
-    // })
-
-    // const products = await prisma.product.findMany({
-    //     take: take,
-    //     skip: skip,
-    //     where: {
-    //         enabled: true,
-    //         status: "APPROVED",
-    //     },
-    //     include: {
-    //         _count: true,
-    //         images: true,
-    //         Category: true,
-    //         User: {
-
-    //         },
-    //         productCity: {
-    //             include: {
-    //                 City: true
-    //             },
-    //         }
-    //     }
-    //     , orderBy: {
-    //         createdAt: "desc"
-    //     }
-    // })
-
 }

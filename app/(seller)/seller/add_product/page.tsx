@@ -122,8 +122,8 @@ export default function UploadNewProduct() {
       const get_seller_info = await fetch("/api/seller/dashboard/basic_info", {
         method: "POST",
         body: form_data,
-        next: { revalidate: 300 } 
-        
+        next: { revalidate: 300 }
+
       })
       const response_seller_info = await get_seller_info.json()
       if (response_seller_info) {
@@ -156,7 +156,10 @@ export default function UploadNewProduct() {
     }
 
     const get_cats = async () => {
-      const fetch_cats = await fetch("/api/public/categories")
+      const fetch_cats = await fetch("/api/public/categories", {
+        method: "POST",
+        next: { revalidate: 300 }
+      });
       const cats = await fetch_cats.json()
       setCategories(cats.data)
     }
@@ -192,7 +195,7 @@ export default function UploadNewProduct() {
           <h1 className='text-2xl'>Upload New Product</h1>
 
           {page_loaded ?
-            ads_count>= user?.numberOfAllowedAds  ?
+            ads_count >= user?.numberOfAllowedAds ?
 
               <div className='mt-5'>
                 <div className='text-red-500'>

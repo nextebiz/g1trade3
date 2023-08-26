@@ -175,28 +175,28 @@ export default function SellerOrders() {
             <div>
 
               <div className='flex items-center flex-wrap'>
-                <Link onClick={() => {
+                <Link onClick={(e) => {
                   setOrderAction("PENDING")
                 }} href={'#'}>
-                  <div className='text-blue-500'>Pending: {totals.PENDING}</div>
+                  <div className='text-blue-500 scale-100 hover:scale-110 transition-all'>Pending: {totals.PENDING}</div>
                 </Link>
                 <span className='px-1 md:px-3 text-sm text-slate-300'>|</span>
                 <Link onClick={() => {
                   setOrderAction("ACCEPTED")
                 }} href={'#'}>
-                  <div className='text-blue-500'>Accepted: {totals.ACCEPTED}</div>
+                  <div className='text-blue-500  scale-100 hover:scale-110 transition-all'>Accepted: {totals.ACCEPTED}</div>
                 </Link>
                 <span className='px-1 md:px-3 text-sm text-slate-300'>|</span>
                 <Link onClick={() => {
                   setOrderAction("DELIVERED")
                 }} href={'#'}>
-                  <div className='text-blue-500'>Delivered: {totals.DELIVERED}</div>
+                  <div className='text-blue-500  scale-100 hover:scale-110 transition-all'>Delivered: {totals.DELIVERED}</div>
                 </Link>
                 <span className='px-1 md:px-3 text-sm text-slate-300'>|</span>
                 <Link onClick={() => {
                   setOrderAction("CANCELLED")
                 }} href={'#'}>
-                  <div className='text-blue-500'>Cancelled: {totals.CANCELLED}</div>
+                  <div className='text-blue-500  scale-100 hover:scale-110 transition-all'>Cancelled: {totals.CANCELLED}</div>
                 </Link>
               </div>
               <div className='py-5'>
@@ -295,7 +295,12 @@ export default function SellerOrders() {
                             </div>
                             <div className='flex items-center '>
                               <div className='bg-slate-200 p-1 w-40 mb-1'>Status:</div>
-                              <div className='ml-2 order-status'>
+                              <div className={`ml-2 order-status 
+                                ${order.orderAction === "PENDING" ? "text-orange-400" : ""}
+                                ${order.orderAction === "ACCEPTED" ? "text-green-500" : ""}
+                                ${order.orderAction === "DELIVERED" ? "text-green-500" : ""}
+                                ${order.orderAction === "CANCELLED" ? "text-red-500" : ""}
+                              `}>
                                 {order.orderAction}
 
 
@@ -316,7 +321,7 @@ export default function SellerOrders() {
                             <div className='flex items-center '>
                               <div className='bg-slate-200 p-1 w-40 mb-1'>Sellers Comment:</div>
                               <div className='ml-2'>
-                                {order.sellerComments}
+                                {order.sellerComments === "" ? "- no comments -" : order.sellerComments}
                               </div>
                             </div>
                             <div className='flex items-center '>

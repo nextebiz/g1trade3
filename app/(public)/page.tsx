@@ -109,6 +109,7 @@ export default function Home() {
     })
     const response_products = await fetch_products.json()
     setProducts(response_products.data)
+    console.log(response_products.data)
     setTotalProducts(response_products.stats.count)
     setTake(response_products.stats.take)
     setPageLoaded(true)
@@ -150,7 +151,7 @@ export default function Home() {
               city_id,
               setCities,
               cities,
-              page_loaded, 
+              page_loaded,
               onClose
             }} />
           </div>
@@ -270,42 +271,49 @@ export default function Home() {
                   }
                 </div>
               </div>
-              : ""}
+              :
+
+              <div className='flex mb-0 ml-3 md:ml-0'>
+                <Spin /><span className='ml-2'>Loading...</span>
+              </div>
+            }
           </div>
-          {page_loaded ? <div>
+          {page_loaded ?
+            <div>
 
-            <div className=''>
-              {products.map((product) => {
-                return <div key={product.id}>
-                  <RightPanelProduct params={{
-                    product: product
-                  }} />
-                </div>
-              })}
-              {/* <RightPanelProduct /> */}
+              <div className=''>
+                {products.map((product) => {
+                  return <div key={product.id}>
+                    <RightPanelProduct params={{
+                      product: product
+                    }} />
+                  </div>
+                })}
+                {/* <RightPanelProduct /> */}
 
+              </div>
+
+              <div className='bg-white p-5 flex justify-center'>
+                {products.length === 0 ? "" : <Pagination
+                  total={total_products}
+                  defaultPageSize={take}
+                  showSizeChanger={false}
+                  showQuickJumper={false}
+                  current={current_page}
+                  onChange={e => {
+                    setIsPaginationClicked(true)
+                    router.push(`/?page=${e}`)
+                    setCurrentPage(e)
+
+                  }}
+                // showTotal={(total_products) => `Total ${total_products} products for sale`}
+                />
+                }
+              </div>
             </div>
-
-            <div className='bg-white p-5 flex justify-center'>
-              {products.length === 0 ? "" : <Pagination
-                total={total_products}
-                defaultPageSize={take}
-                showSizeChanger={false}
-                showQuickJumper={false}
-                current={current_page}
-                onChange={e => {
-                  setIsPaginationClicked(true)
-                  router.push(`/?page=${e}`)
-                  setCurrentPage(e)
-
-                }}
-              // showTotal={(total_products) => `Total ${total_products} products for sale`}
-              />
-              }
-            </div>
-          </div> : <div className='flex mb-0 ml-3 md:ml-0'>
-            <Spin /><span className='ml-2'>Loading...</span>
-          </div>}
+            :
+            ""
+          }
         </div>
 
       </div>

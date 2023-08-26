@@ -138,7 +138,10 @@ export default function UpdateProduct() {
                         // if(response_fetch_product.data)
 
 
-                        const fetch_cats = await fetch("/api/public/categories")
+                        const fetch_cats = await fetch("/api/public/categories", {
+                            method: "POST", 
+                            next: { revalidate: 300 }
+                        });
                         const cats = await fetch_cats.json()
                         setCategories(cats.data)
 

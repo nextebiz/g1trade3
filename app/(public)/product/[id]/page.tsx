@@ -2,13 +2,14 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { ExclamationCircleOutlined, LoadingOutlined, HeartOutlined, HeartFilled, FieldTimeOutlined, DollarOutlined, CheckCircleOutlined, LoginOutlined, StarFilled, StarOutlined, LeftOutlined, ShoppingCartOutlined, WhatsAppOutlined, PhoneOutlined } from '@ant-design/icons'
-import { Button, Spin, Input, Form, Select, ConfigProvider } from 'antd';
+import { Button, Spin, Input, Form, Select, ConfigProvider, Rate } from 'antd';
 import Link from 'next/link';
 import { get_user_from_session } from '@/utils/getUserData';
 import { signIn } from 'next-auth/react';
 import TextArea from 'antd/es/input/TextArea';
 import { Order } from '@prisma/client';
 import datjs from 'dayjs';
+import ProductRatings from '../rating/page';
 
 type FieldType = {
   product_title?: string;
@@ -41,6 +42,14 @@ export default function ProductDisplay() {
   const [like_clicked, setLikeClicked] = useState(false);
   const [total_likes, setTotalLikes] = useState(0)
 
+  const getAverageOfStars = (stars: []) => {
+    const nums = stars.map((star: any) => {
+      return star.stars
+    })
+    const sum = nums.reduce((a, b) => a + b, 0);
+    const avg = (sum / nums.length) || 0;
+    return avg
+  }
 
   const getCitiesString = (productCities: ProductCity[]) => {
     const total = productCities.length;
@@ -188,6 +197,7 @@ export default function ProductDisplay() {
           next: { revalidate: 300 }
         });
       const response_product = await fetch_product.json()
+      console.log(response_product)
       if (response_product.like === "yes") {
         setLike(true)
       }
@@ -735,33 +745,16 @@ export default function ProductDisplay() {
 
                 </div>
 
-                <div className='flex flex-wrap items-center align-middle mt-6 mb-3 px-3'>
+
+
+                <div className='flex flex-wrap items-center align-middle mt-5 mb-3 px-3'>
                   <p className=' mr-2'>Sold by:</p>
 
                   <Link href={`/profile/${product?.User.id}`}>
                     <span className='ml-0 md:ml-0 text-blue-500 mr-2'>{product?.User.name}</span>
                   </Link>
-
-                  <div className='flex sm:flex-wrap items-center align-middle'>
-                    <div className='text-yellow-500'>
-                      <StarFilled />
-                    </div>
-                    <div className='text-yellow-500'>
-                      <StarFilled />
-                    </div>
-                    <div className='text-yellow-500'>
-                      <StarFilled />
-                    </div>
-                    <div className='text-yellow-500'>
-                      <StarOutlined />
-                    </div>
-                    <div className='text-yellow-500'>
-                      <StarOutlined />
-                    </div>
-                    <div className='flex ml-2 text-sm'><div className='text-blue-500'>2 Reviews</div></div>
-                  </div>
                 </div>
-                <div className='flex flex-wrap text-sm px-3'>
+                <div className='flex flex-wrap text-sm px-3 mb-3'>
                   <div>
                     {product.Category?.name}
                   </div>
@@ -772,6 +765,33 @@ export default function ProductDisplay() {
                   {getCitiesString(product.productCity)}
 
                 </div>
+
+
+                {product.rating.length > 0 ?
+                  <div className=' text-sm px-3'>
+
+                    <div className='text-lg'>
+
+                      <div className='flex sm:flex-wrap items-center align-middle'>
+                        <div className='mr-2' id='reviews'>Reviews</div>
+
+                        <Rate allowHalf disabled defaultValue={getAverageOfStars(product.rating as [])} />
+                        <div className='flex ml-2 text-sm'>
+                          <div className='text-blue-500'>
+                            {product.rating.length} Reviews
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='pt-3'>
+                      <ProductRatings params={{ product_id: product.id }} />
+                    </div>
+                  </div>
+                  : ""
+                }
+
+
+
               </div>
             </div>
 

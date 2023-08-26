@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { ShoppingOutlined, ShoppingFilled, HeartOutlined, HeartFilled, StarOutlined, StarFilled, StarTwoTone } from '@ant-design/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Rate } from 'antd';
 // import { ApartmentOutlined, MessageOutlined, ProfileOutlined, AppstoreAddOutlined, AppstoreOutlined, ShoppingCartOutlined } from "@ant-design/icons"
 interface Props {
     params: {
@@ -14,6 +15,15 @@ interface Props {
 export default function RightPanelProduct({ params: { product } }: Props) {
 
     const router = useRouter();
+
+    const getAverageOfStars = (stars: []) => {
+        const nums = stars.map((star: any) => {
+            return star.stars
+        })
+        const sum = nums.reduce((a, b) => a + b, 0);
+        const avg = (sum / nums.length) || 0;
+        return avg
+    }
 
     const getCitiesString = (productCities: ProductCity[]) => {
         const total = productCities.length;
@@ -139,29 +149,29 @@ export default function RightPanelProduct({ params: { product } }: Props) {
                 <div className='text-sm mb-3'>
                     {product?.description?.replace(/^(.{75}[^\s]*).*/, "$1")}{product?.description?.length > 75 ? "..." : ""}
                 </div>
-                <div className='flex flex-wrap items-center align-middle'>
+                <div className='mb-3'>
+                    {product.rating.length > 0 ?
+                        <div className='flex sm:flex-wrap items-center align-middle'>
+                            <div className='text-sm mr-2'>Product Reviews:</div>
+
+                            <Rate allowHalf disabled defaultValue={getAverageOfStars(product.rating as [])} />
+                            <div className='flex ml-2 text-sm'>
+                            <Link href={`/product/${product.id}#reviews`}>
+                                    <div className='text-blue-500'>
+                                        {product.rating.length} Reviews
+                                    </div>
+                                </Link>
+                            </div>
+                        </div>
+                        : ""
+                    }
+                </div>
+                <div className='flex items-center align-middle'>
                     <p className='text-sm md:text-sm mr-2'>Sold by:</p>
                     <Link href={`/profile/${product?.User.id}`}>
                         <span className='ml-0 md:ml-0 text-blue-500 mr-2'>{product?.User.name}</span>
                     </Link>
-                    <div className='flex sm:flex-wrap items-center align-middle'>
-                        <div className='text-yellow-500'>
-                            <StarFilled />
-                        </div>
-                        <div className='text-yellow-500'>
-                            <StarFilled />
-                        </div>
-                        <div className='text-yellow-500'>
-                            <StarFilled />
-                        </div>
-                        <div className='text-yellow-500'>
-                            <StarOutlined />
-                        </div>
-                        <div className='text-yellow-500'>
-                            <StarOutlined />
-                        </div>
-                        <div className='flex ml-2 text-sm'><div className='text-blue-500'>2 Reviews</div></div>
-                    </div>
+
                 </div>
 
             </div>

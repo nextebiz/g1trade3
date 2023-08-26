@@ -150,4 +150,5 @@ type ProductRating = {
   productId: string;
   stars: number;
   userId: string;
+  User: User;
 };

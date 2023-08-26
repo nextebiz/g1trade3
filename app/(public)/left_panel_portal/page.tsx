@@ -83,7 +83,10 @@ export default function LeftPanelPortal({ params: {
 
     useEffect(() => {
         const getData = async () => {
-            const fetch_cats = await fetch("/api/public/categories");
+            const fetch_cats = await fetch("/api/public/categories", {
+                method: "POST", 
+                next: { revalidate: 300 }
+            });
             const response_cats = await fetch_cats.json();
             setCategories(response_cats.data)
             const fetch_province = await fetch("/api/public/provinces", {

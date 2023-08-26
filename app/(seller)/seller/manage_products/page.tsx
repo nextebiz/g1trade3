@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { ShoppingCartOutlined, CheckOutlined, FormOutlined, DeleteOutlined, EyeOutlined, PictureOutlined, QuestionCircleOutlined } from "@ant-design/icons"
+import { PlusCircleOutlined, CheckOutlined, FormOutlined, DeleteOutlined, EyeOutlined, PictureOutlined, QuestionCircleOutlined } from "@ant-design/icons"
 import { Spin, Popconfirm, Button } from 'antd'
 import Link from 'next/link'
 
@@ -221,7 +221,19 @@ export default function ManageProducts() {
                     </div>
                   })}
                 </div>
-                : "No product found"}
+                :
+                <div>
+                  <div>
+                    No product found
+                  </div>
+                  <div className='text-blue-500 mt-2'>
+                    <Link href={'/seller/add_product'}>
+                      <span><PlusCircleOutlined /></span>
+                      <span className='ml-2'>Add New Product</span>
+                    </Link>
+                  </div>
+                </div>
+              }
             </div>
             :
             <div className='flex'>
