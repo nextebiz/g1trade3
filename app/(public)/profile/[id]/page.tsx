@@ -16,8 +16,9 @@ export default function Profile() {
     const [user, setUser] = useState<User>({} as User)
     const [content, setContent] = useState('');
     const [page_loaded, setPageLoaded] = useState(false)
+    const [products_loaded, setProductsLoaded] = useState(false)
     const [products, setProducts] = useState<Product[]>([])
-    const [take, setTake] = useState(8)
+    const [take, setTake] = useState(30)
     const [skip, setSkip] = useState(0)
     const [refresh_data, setRefreshData] = useState(false)
 
@@ -115,18 +116,20 @@ export default function Profile() {
 
     useEffect(() => {
         const getProducts = async () => {
+            setProductsLoaded(false)
             const form_data = new FormData();
             form_data.set("user_id", id as string)
             form_data.set("take", take.toString())
             form_data.set("skip", skip.toString())
 
-            const fetch_products = await fetch("/api/seller/products/find_products", { 
-                method: "POST", 
+            const fetch_products = await fetch("/api/seller/products/find_products", {
+                method: "POST",
                 body: form_data,
-                next: { revalidate: 300 } 
+                next: { revalidate: 300 }
             })
             const response_products = await fetch_products.json();
             setProducts(response_products.data.products)
+            setProductsLoaded(true)
         }
 
         if (page_loaded) {
@@ -218,51 +221,59 @@ export default function Profile() {
                     <hr />
                 </div>
 
-                <div className='flex flex-wrap justify-center'>
+                {products_loaded ?
 
-                    {products.map(product => {
-                        if (product.image_cover_id != null) {
-                            const image_id = product.image_cover_id;
-                        }
+                    <div className='flex flex-wrap justify-center'>
 
-                        const image_url = product.images[0]?.url
+                        {products.map(product => {
+                            if (product.image_cover_id != null) {
+                                const image_id = product.image_cover_id;
+                            }
 
-                        return <div key={product.id} className='m-2 w-80 mb-4 md:mb-2' >
-                            <Link href={`/product/${product.id}`}>
-                                <div className='bg-slate-100 p-0 relative rounded-b-lg overflow-hidden scale-100 hover:scale-105 transition-all'>
+                            const image_url = product.images[0]?.url
 
-                                    <div className='h-80 w-full border border-slate-300' style={{ backgroundColor: "#e8e8e8" }}>
-                                        <img src={
-                                            get_cover_image(product)?.url !== undefined ? get_cover_image(product)?.url :
+                            return <div key={product.id} className='m-2 w-80 mb-4 md:mb-2' >
+                                <Link href={`/product/${product.id}`}>
+                                    <div className='bg-slate-100 p-0 relative rounded-b-lg overflow-hidden scale-100 hover:scale-105 transition-all'>
 
-                                                product.Category.name === "G1 Garlic Dry" ?
-                                                    "/images/g1garlic-dry-no-image.jpg"
-                                                    :
-                                                    "/images/g1garlic-wet-no-image.jpg"
+                                        <div className='h-80 w-full border border-slate-300' style={{ backgroundColor: "#e8e8e8" }}>
+                                            <img src={
+                                                get_cover_image(product)?.url !== undefined ? get_cover_image(product)?.url :
 
-                                        } className='object-cover w-full h-80 m-auto' alt={product.Category.name} />
+                                                    product.Category.name === "G1 Garlic Dry" ?
+                                                        "/images/g1garlic-dry-no-image.jpg"
+                                                        :
+                                                        "/images/g1garlic-wet-no-image.jpg"
 
+                                            } className='object-cover w-full h-80 m-auto' alt={product.Category.name} />
+
+                                        </div>
+                                        <div className='bg-white absolute top-1 right-1 p-1 bg-opacity-80 rounded-lg px-3'>
+                                            <sup className='text-xs'>Rs</sup>   <span className='text-lg'>{product.price}</span><span className='text-xs ml-1 capitalize'>/{product.priceUnit.toLowerCase()}</span>
+                                        </div>
+                                        <div className='text-center bg-slate-600 py-4 text-white border-t border-t-slate-400 '> {product.title}</div>
                                     </div>
-                                    <div className='bg-white absolute top-1 right-1 p-1 bg-opacity-80 rounded-lg px-3'>
-                                        <sup className='text-xs'>Rs</sup>   <span className='text-lg'>{product.price}</span><span className='text-xs ml-1 capitalize'>/{product.priceUnit.toLowerCase()}</span>
-                                    </div>
-                                    <div className='text-center bg-slate-600 py-4 text-white border-t border-t-slate-400 '> {product.title}</div>
-                                </div>
-                            </Link>
-                        </div>
-                    })}
-                </div>
-
+                                </Link>
+                            </div>
+                        })}
+                    </div>
+                    :
+                    <div className='flex justify-center'>
+                        <Spin /> <span className='ml-2'>Loading...</span>
+                    </div>
+                }
                 <div className='my-8'>
                     <hr />
                 </div>
-                <div className='flex justify-center'>
+                {/* <div className='flex justify-center'>
                     <Button>Load More...</Button>
-                </div>
+                </div> */}
 
-            </div> : <div>
-                <Spin /> <span className='ml-2'>Loading...</span>
-            </div>}
+            </div> :
+                <div>
+                    <Spin /> <span className='ml-2'>Loading...</span>
+                </div>
+            }
         </div>
     )
 }

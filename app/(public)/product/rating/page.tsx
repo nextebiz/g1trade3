@@ -11,7 +11,7 @@ export default function ProductRatings({ params: { product_id } }: Props) {
 
     const [ratings, setRatings] = useState<ProductRating[]>([])
     const [skip, setSkip] = useState(0)
-    const [take, setTake] = useState(2)
+    const [take, setTake] = useState(10)
     const [total, setTotal] = useState(0)
     const [review_loaded, setReviewLoaded] = useState(false)
     const [page_loaded, setPageLoaded] = useState(false)

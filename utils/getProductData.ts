@@ -8,6 +8,8 @@ export async function getSingleProduct(id: string) {
     body: form_data,
   });
 
+
   const fetch_response = await fetch_product.json();
+
   return fetch_response;
 }

@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useParams, usePathname, useRouter } from 'next/navigation'
-import { ExclamationCircleOutlined, LoadingOutlined, HeartOutlined, HeartFilled, FieldTimeOutlined, DollarOutlined, CheckCircleOutlined, LoginOutlined, StarFilled, StarOutlined, LeftOutlined, ShoppingCartOutlined, WhatsAppOutlined, PhoneOutlined } from '@ant-design/icons'
+import { FacebookFilled, FacebookOutlined, ExclamationCircleOutlined, LoadingOutlined, HeartOutlined, HeartFilled, FieldTimeOutlined, DollarOutlined, CheckCircleOutlined, LoginOutlined, StarFilled, StarOutlined, LeftOutlined, ShoppingCartOutlined, WhatsAppOutlined, PhoneOutlined } from '@ant-design/icons'
 import { Button, Spin, Input, Form, Select, ConfigProvider, Rate } from 'antd';
 import Link from 'next/link';
 import { get_user_from_session } from '@/utils/getUserData';
@@ -10,7 +10,8 @@ import TextArea from 'antd/es/input/TextArea';
 import { Order } from '@prisma/client';
 import dayjs from 'dayjs';
 import ProductRatings from '../rating/page';
-import { FacebookIcon, FacebookShareButton, WhatsappIcon, WhatsappShareButton } from 'react-share';
+// import { FacebookIcon, FacebookShareButton, WhatsappIcon, WhatsappShareButton } from 'react-share';
+import { FacebookShareButton, WhatsappShareButton } from 'react-share';
 
 
 
@@ -202,7 +203,7 @@ export default function ProductDisplay() {
           next: { revalidate: 300 }
         });
       const response_product = await fetch_product.json()
-      console.log(response_product)
+      // console.log(response_product)
       if (response_product?.like === "yes") {
         setLike(true)
       }
@@ -342,13 +343,15 @@ export default function ProductDisplay() {
                           <div className='mr-5'>
                             <FacebookShareButton url={process.env.NEXT_PUBLIC_SERVER_PATH + pathName}
                             >
-                              <FacebookIcon round size="32px" />
+                              {/* <FacebookIcon round size="32px" /> */}
+                              <span className='text-2xl text-blue-600'><FacebookFilled /></span>
                             </FacebookShareButton>
                           </div>
                           <div className='mr-5'>
                             <WhatsappShareButton url={process.env.NEXT_PUBLIC_SERVER_PATH + pathName}
                             >
-                              <WhatsappIcon round size="32px" />
+                              {/* <WhatsappIcon round size="32px" /> */}
+                              <span className='text-2xl text-green-600'><WhatsAppOutlined /></span>
                             </WhatsappShareButton>
                           </div>
                         </div>

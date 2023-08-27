@@ -30,7 +30,10 @@ export async function POST(req: Request, res: Response) {
             }
         },
         take: take,
-        skip: skip
+        skip: skip,
+        orderBy:{
+            createdAt: "desc"
+        }
     })
     const count_ratings = await prisma.productRating.count({ where: { productId: product_id } })
     if (ratings) {

@@ -4,6 +4,7 @@ import { CheckCircleFilled, CheckCircleOutlined, IdcardOutlined, MessageOutlined
 import Link from 'next/link'
 import { get_user_from_session } from '@/utils/getUserData'
 import { Spin } from 'antd'
+import dayjs from 'dayjs';
 
 
 export default function SellerDashboard() {
@@ -12,8 +13,11 @@ export default function SellerDashboard() {
     const [ads_count, setAdsCount] = useState(0)
     const [page_loaded, setPageLoaded] = useState(false)
 
-
-
+    const checkExpiryDays = (product_user: User) => {
+        let days = 0;
+        days = dayjs().diff(dayjs(product_user.expiryDate), "days");
+        return days;
+    }
 
     useEffect(() => {
 
@@ -23,7 +27,7 @@ export default function SellerDashboard() {
             const get_seller_info = await fetch("/api/seller/dashboard/basic_info", {
                 method: "POST",
                 body: form_data,
-                next: { revalidate: 300 } 
+                next: { revalidate: 300 }
             })
             const response_seller_info = await get_seller_info.json()
             if (response_seller_info) {
@@ -64,7 +68,45 @@ export default function SellerDashboard() {
                             </div>
 
                             {user?.id ?
-                                <div className='text-sm'>Welcome {user?.name}</div>
+                                <div className='text-sm'>
+                                    <span>
+                                        Welcome {user?.name}
+                                    </span>
+                                    <span className='px-2'>|</span>
+                                    <span>
+
+                                        {checkExpiryDays(user) > 0 ?
+                                            <span>
+                                                <span className='mr-2 text-red-500 text-lg'>
+                                                    <ExclamationCircleOutlined />
+                                                </span>
+                                                <span className='text-red-500'>
+                                                    Account expired {checkExpiryDays(user)} days ago. Account expiry date:
+                                                    <span className='font-bold ml-1 text-red-500'>
+                                                        {dayjs(user.expiryDate.toString()).format("DD MMM YYYY")}
+                                                    </span>
+
+                                                </span>
+                                            </span>
+
+
+                                            :
+                                            <span>
+                                                <span className='mr-2 text-green-500 text-lg'>
+                                                    <CheckCircleOutlined />
+                                                </span>
+                                                <span>
+                                                    Account is Active. Account renewal date:
+                                                    <span className='font-bold ml-1 text-green-500'>
+                                                        {dayjs(user.expiryDate.toString()).format("DD MMM YYYY")}
+                                                    </span>
+
+                                                </span>
+                                            </span>
+                                        }
+                                    </span>
+
+                                </div>
                                 : ""}
                         </div>
 
@@ -86,33 +128,46 @@ export default function SellerDashboard() {
 
                                     {page_loaded ?
                                         <div>
-                                            {ads_count >= user?.numberOfAllowedAds ?
+                                            {checkExpiryDays(user) > 0 ?
+                                                <span className='text-red-500'>
+                                                    <span>
+                                                        Your account expired {checkExpiryDays(user)} days ago. Please
+                                                    </span>
+                                                    <Link target='_blank' href={'/contact'}><span className='mx-1 text-blue-500'>Contact Support</span></Link>
+                                                    to renew your account!
+                                                </span>
+                                                :
                                                 <div>
-                                                    <div className='text-green-500'>
-                                                        {ads_count}
-                                                        <span className='mx-1'>of</span>{user?.numberOfAllowedAds} ads are Live
-                                                    </div>
-                                                    <div className='border p-2 px-4'>
-                                                        <div className='text-red-500'>
-                                                            <span className='mr-2'>
-                                                                <ExclamationCircleOutlined />
-                                                            </span>
+
+                                                    {ads_count >= user?.numberOfAllowedAds ?
+                                                        <div>
+                                                            <div className='text-green-500'>
+                                                                {ads_count}
+                                                                <span className='mx-1'>of</span>{user?.numberOfAllowedAds} ads are Live
+                                                            </div>
+                                                            <div className='border p-2 px-4'>
+                                                                <div className='text-red-500'>
+                                                                    <span className='mr-2'>
+                                                                        <ExclamationCircleOutlined />
+                                                                    </span>
+                                                                    <span>
+                                                                        Your ads quota is full
+                                                                    </span>
+                                                                </div>
+                                                                <Link target='_blank' href={'/contact'}>
+                                                                    <span className='text-blue-500'>Contact us </span>
+                                                                    <span>to increase ads limit</span>
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className='text-green-500'>
+                                                            <span className='mr-2'><CheckCircleOutlined /></span>
                                                             <span>
-                                                                Your ads quota is full
+                                                                {ads_count} of {user?.numberOfAllowedAds} ads are live
                                                             </span>
                                                         </div>
-                                                        <Link target='_blank' href={'/contact'}>
-                                                            <span className='text-blue-500'>Contact us </span>
-                                                            <span>to increase ads limit</span>
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                                :
-                                                <div className='text-green-500'>
-                                                    <span className='mr-2'><CheckCircleOutlined /></span>
-                                                    <span>
-                                                        {ads_count} of {user?.numberOfAllowedAds} ads are live
-                                                    </span>
+                                                    }
                                                 </div>
                                             }
                                         </div>

@@ -53,7 +53,7 @@ export default function SellerProfile() {
     const fetch_save = await fetch("/api/buyer/verify_info", {
       method: "POST",
       body: form_data,
-      next: { revalidate: 300 } 
+      next: { revalidate: 300 }
 
     })
     const response_save = await fetch_save.json();
@@ -87,10 +87,10 @@ export default function SellerProfile() {
         const form_data = new FormData();
         form_data.set("user_id", get_user.id)
 
-        const fetch_profile = await fetch("/api/seller/profile", { 
-          method: "POST", 
+        const fetch_profile = await fetch("/api/seller/profile", {
+          method: "POST",
           body: form_data,
-          next: { revalidate: 300 } 
+          next: { revalidate: 300 }
         })
         const response_profile = await fetch_profile.json();
 
@@ -133,8 +133,12 @@ export default function SellerProfile() {
                         <div className='text-2xl '>
                           Welcome {user?.name}
                         </div>
-                        <div className='text-xs'>
-                          {user?.email}
+                        <div className='text-sm'>
+                          {user?.email} <span className='px-2'>|</span>
+
+                          <Link href={`/profile/${user.id}`} target='_blank'>
+                            <span className='text-blue-500'>Preview Profile</span>
+                          </Link>
                         </div>
                       </div>
                       <div className=''>

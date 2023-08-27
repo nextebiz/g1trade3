@@ -15,6 +15,7 @@ export async function POST(req: Request, res: Response) {
 
     const take = parseInt(form_data.get("take") as string)
     const skip = parseInt(form_data.get("skip") as string)
+
     if (user_id !== null) {
         const total = await prisma.product.count({
             where: {
@@ -22,7 +23,10 @@ export async function POST(req: Request, res: Response) {
                 enabled: true,
                 AND: {
                     User: {
-                        enabled: true
+                        enabled: true,
+                        expiryDate:{
+                            gt: new Date()
+                        }
                     }
                 }
             }
