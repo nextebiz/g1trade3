@@ -19,7 +19,7 @@ export async function generateMetadata() {
     form_data.set("product_id", product_id);
     console.log(product_id)
 
-    const api_path = `${process.env.SERVER_PATH}/api/seller/products/find_product`;
+    const api_path = `${process.env.NEXT_PUBLIC_SERVER_PATH}/api/seller/products/find_product`;
     console.log(api_path)
     const fetch_product = await fetch(api_path, {
         method: "POST",
