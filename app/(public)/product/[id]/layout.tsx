@@ -7,27 +7,33 @@ interface Props {
     children: React.ReactNode
 }
 
+interface Props2 {
+    params: {
+        id: string
+    }
+}
 
 // console.log(headersList)
 
-export async function generateMetadata() {
-    const headersList = headers()
-    const referer = headersList.get('referer')
-    console.log("referer")
-    console.log(referer)
+export async function generateMetadata({ params: { id } }: Props2) {
+    // console.log(id)
+    // const headersList = headers()
+    // const referer = headersList.get('referer')
+    // console.log("referer")
+    // console.log(referer)
 
-    const pathname = headersList.get("x-invoke-path");
-    console.log("pathname")
-    console.log(pathname)
-   
-    const product_id = pathname?.split("/product/").pop() as string;
-    console.log("product_id")
-    console.log(product_id)
+    // const pathname = headersList.get("x-invoke-path");
+    // console.log("pathname")
+    // console.log(pathname)
 
-    if (product_id !== undefined) {
+    // const product_id = pathname?.split("/product/").pop() as string;
+    // console.log("product_id")
+    // console.log(product_id)
+
+    if (id !== undefined) {
 
         const form_data = new FormData();
-        form_data.set("product_id", product_id);
+        form_data.set("product_id", id);
 
         const api_path = `${process.env.NEXT_PUBLIC_SERVER_PATH}/api/seller/products/find_product`;
         const fetch_product = await fetch(api_path, {
