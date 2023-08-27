@@ -18,7 +18,8 @@ export async function POST(req: Request, res: Response) {
             id: product_id as string
         }, include: {
             images: true,  // earlier {}
-            productCity: true
+            productCity: true, 
+            User: true
         }
     })
 
