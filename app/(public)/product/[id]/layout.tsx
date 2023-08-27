@@ -64,25 +64,25 @@ export async function generateMetadata({ params: { id } }: Props2) {
         })
 
 
-        if (find_image !== undefined) {
-            if (product?.images?.length > 0) {
+        // if (find_image !== undefined) {
+        //     if (product?.images?.length > 0) {
 
-                const find_other_images: [] = product?.images?.filter((my_image: ImageProduct) => {
-                    if (product.image_cover_id !== null) {
-                        return my_image.id !== product.image_cover_id
-                    }
-                    return my_image.id !== find_image.id
-                })
-                if (find_other_images.length > 0) {
-                    find_other_images.map((my_image:any) => {
-                        images_to_post.push({
-                            url: my_image.url
-                        })
-                        return my_image;
-                    })
-                }
-            }
-        }
+        //         const find_other_images: [] = product?.images?.filter((my_image: ImageProduct) => {
+        //             if (product.image_cover_id !== null) {
+        //                 return my_image.id !== product.image_cover_id
+        //             }
+        //             return my_image.id !== find_image.id
+        //         })
+        //         if (find_other_images.length > 0) {
+        //             find_other_images.map((my_image:any) => {
+        //                 images_to_post.push({
+        //                     url: my_image.url
+        //                 })
+        //                 return my_image;
+        //             })
+        //         }
+        //     }
+        // }
 
         if (product?.id !== undefined) {
             return {
