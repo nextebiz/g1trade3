@@ -12,10 +12,15 @@ interface Props {
 
 export async function generateMetadata() {
     const headersList = headers()
-    const referer = headersList.get('x-invoke-path')
+    const referer = headersList.get('referer')
     console.log("referer")
     console.log(referer)
-    const product_id = referer?.split("/product/").pop() as string;
+
+    const pathname = headersList.get("x-invoke-path");
+    console.log("pathname")
+    console.log(pathname)
+   
+    const product_id = pathname?.split("/product/").pop() as string;
     console.log("product_id")
     console.log(product_id)
 
@@ -32,7 +37,7 @@ export async function generateMetadata() {
         const response_product = await fetch_product.json();
         const product: Product = response_product.data;
 
-        console.log(product)
+        // console.log(product)
         if (product?.id !== undefined) {
             return {
                 title: product.title,
